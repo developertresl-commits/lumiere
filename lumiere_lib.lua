@@ -1,1784 +1,2539 @@
--- LumiereLibrary v1.0 (Patched & Optimized)
 local LumiereLibrary = {}
 
--- ==================== UTILITY FUNCTIONS ====================
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-local TextService = game:GetService("TextService")
-
-local function CreateNotification(Text, Duration)
-    Duration = Duration or 5
-    local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-    local Holder = game.CoreGui.Lumiere.CC:WaitForChild("NotificationHolder")
-
-    local GothamSemiFont = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    local GothamBoldFont = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-
-    local Notif = Instance.new("CanvasGroup")
-    Notif.Name = "Notification"
-    Notif.Size = UDim2.new(1, 0, 0, 0)
-    Notif.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-    Notif.GroupTransparency = 1
-    Notif.BorderSizePixel = 0
-    Notif.Parent = Holder
-
-    local ScaleObj = Instance.new("UIScale", Notif)
-    ScaleObj.Scale = 0.8
-
-    local UICorner = Instance.new("UICorner", Notif)
-    UICorner.CornerRadius = UDim.new(0, 10)
-
-    local UIStroke = Instance.new("UIStroke", Notif)
-    UIStroke.Color = Color3.fromRGB(35, 35, 35)
-    UIStroke.Thickness = 1
-    UIStroke.Transparency = 1
-
-    local TitleLabel = Instance.new("TextLabel", Notif)
-    TitleLabel.Name = "Title"
-    TitleLabel.Size = UDim2.new(1, -30, 0, 20)
-    TitleLabel.Position = UDim2.new(0, 15, 0, 15)
-    TitleLabel.BackgroundTransparency = 1
-    TitleLabel.FontFace = GothamBoldFont
-    TitleLabel.Text = "LUMIERE.CC"
-    TitleLabel.TextColor3 = Color3.fromRGB(113, 82, 255)
-    TitleLabel.TextSize = 13
-    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-    local DescLabel = Instance.new("TextLabel", Notif)
-    DescLabel.Name = "Description"
-    DescLabel.BackgroundTransparency = 1
-    DescLabel.FontFace = GothamSemiFont
-    DescLabel.Text = Text
-    DescLabel.TextColor3 = Color3.fromRGB(125, 125, 125)
-    DescLabel.TextSize = 14
-    DescLabel.TextWrapped = true
-    DescLabel.TextXAlignment = Enum.TextXAlignment.Left
-    DescLabel.TextYAlignment = Enum.TextYAlignment.Top
-
-    local paddingX = 30
-    local topMargin = 35
-    local bottomPadding = 28
-
-    local maxWidth = Holder.AbsoluteSize.X - paddingX
-    local textSize = TextService:GetTextSize(Text, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
-    local targetHeight = math.clamp(textSize.Y + topMargin + bottomPadding, 80, 300)
-
-    DescLabel.Position = UDim2.new(0, 15, 0, topMargin)
-    DescLabel.Size = UDim2.new(1, -paddingX, 0, textSize.Y)
-
-    TweenService:Create(Notif, tInfo, { Size = UDim2.new(1, 0, 0, targetHeight), GroupTransparency = 0 }):Play()
-    TweenService:Create(ScaleObj, tInfo, { Scale = 1 }):Play()
-    TweenService:Create(UIStroke, tInfo, { Transparency = 0 }):Play()
-
-    local TimerBar = Instance.new("Frame", Notif)
-    TimerBar.Name = "Timer"
-    TimerBar.Size = UDim2.new(1, -24, 0, 2)
-    TimerBar.Position = UDim2.new(0, 12, 1, -8)
-    TimerBar.BackgroundColor3 = Color3.fromRGB(113, 82, 255)
-    TimerBar.BorderSizePixel = 0
-    TimerBar.ZIndex = 2
-
-    TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 0, 2) }):Play()
-
-    task.delay(Duration, function()
-        local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
-        TweenService:Create(ScaleObj, tInfo, { Scale = 0.8 }):Play()
-        TweenService:Create(UIStroke, tInfo, { Transparency = 1 }):Play()
-        fadeOut:Play()
-        fadeOut.Completed:Connect(function()
-            Notif:Destroy()
-        end)
-    end)
-end
-
--- ==================== WINDOW CONSTRUCTION ====================
 function LumiereLibrary:Window(params)
-    local Window = {}
-    Window.GameName = params.GameName
-    Window.Version = params.Version
+    local Window = {}
 
-    local Lumiere.CC = {}
-    local CoreGui = game:GetService("CoreGui")
+    Window.GameName = params.GameName
+    Window.Version = params.Version
 
-    -- Create ScreenGui
-    Lumiere.CC["1"] = Instance.new("ScreenGui", CoreGui)
-    Lumiere.CC["1"].IgnoreGuiInset = true
-    Lumiere.CC["1"].ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
-    Lumiere.CC["1"].Name = "Lumiere.CC"
-    Lumiere.CC["1"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    Lumiere.CC["1"].ResetOnSpawn = false
+    local Lumiere.CC = {}
 
-    -- Main CanvasGroup
-    Lumiere.CC["2"] = Instance.new("CanvasGroup", Lumiere.CC["1"])
-    Lumiere.CC["2"].BorderSizePixel = 0
-    Lumiere.CC["2"].BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    Lumiere.CC["2"].AnchorPoint = Vector2.new(0.5, 0.5)
-    Lumiere.CC["2"].Size = UDim2.new(0, 611, 0, 459)
-    Lumiere.CC["2"].Position = UDim2.new(0.5, 0, 0.5, 0)
-    Lumiere.CC["2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Lumiere.CC["2"].Name = "Main"
-    Lumiere.CC["2"]:SetAttribute("Minimized", false)
+    Lumiere.CC["1"] = Instance.new("ScreenGui", game.CoreGui);
+    Lumiere.CC["1"]["IgnoreGuiInset"] = true;
+    Lumiere.CC["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
+    Lumiere.CC["1"]["Name"] = [[Lumiere.CC]];
+    Lumiere.CC["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+    Lumiere.CC["1"]["ResetOnSpawn"] = false;
 
-    local mainCorner = Instance.new("UICorner", Lumiere.CC["2"])
-    mainCorner.CornerRadius = UDim.new(0.05, 0)
+    Lumiere.CC["2"] = Instance.new("CanvasGroup", Lumiere.CC["1"]);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["2"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 611, 0, 459);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = [[Main]];
 
-    -- Top bar
-    local topBar = Instance.new("Frame", Lumiere.CC["2"])
-    topBar.BorderSizePixel = 0
-    topBar.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    topBar.Size = UDim2.new(0, 611, 0, 75)
-    topBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    topBar.Name = "Top"
-    topBar.ZIndex = 2
+    Lumiere.CC["2"]:SetAttribute([[Minimized]], false);
 
-    local barLine = Instance.new("Frame", topBar)
-    barLine.ZIndex = 2
-    barLine.BorderSizePixel = 0
-    barLine.BackgroundColor3 = Color3.fromRGB(41, 41, 41)
-    barLine.Size = UDim2.new(0, 611, 0, 1)
-    barLine.Position = UDim2.new(0, 0, 1, 0)
-    barLine.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    barLine.Name = "Bar"
+    Lumiere.CC["3"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["CornerRadius"] = UDim.new(0.05, 0);
 
-    -- Logo
-    local logo = Instance.new("ImageLabel", topBar)
-    logo.Active = true
-    logo.BorderSizePixel = 0
-    logo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    logo.ImageColor3 = Color3.fromRGB(114, 83, 255)
-    logo.AnchorPoint = Vector2.new(0.5, 0.5)
-    logo.Image = "rbxassetid://110653068142193"
-    logo.Size = UDim2.new(0, 85, 0, 87)
-    logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    logo.BackgroundTransparency = 1
-    logo.Name = "Logo"
-    logo.Position = UDim2.new(0.05936, 0, 0.5, 0)
-    Instance.new("UIAspectRatioConstraint", logo)
+    Lumiere.CC["4"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["4"]["BorderSizePixel"] = 0;
+    Lumiere.CC["4"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["4"]["Size"] = UDim2.new(0, 611, 0, 75);
+    Lumiere.CC["4"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["4"]["Name"] = [[Top]];
+    Lumiere.CC["4"]["ZIndex"] = 2;
 
-    local titleLabel = Instance.new("TextLabel", topBar)
-    titleLabel.BorderSizePixel = 0
-    titleLabel.TextSize = 15
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.TextYAlignment = Enum.TextYAlignment.Top
-    titleLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-    titleLabel.TextColor3 = Color3.fromRGB(114, 83, 255)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Size = UDim2.new(0, 68, 0, 19)
-    titleLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    titleLabel.Text = "LUMIERE.CC"
-    titleLabel.Name = "Title"
-    titleLabel.Position = UDim2.new(0.106, 0, 0.265, 0)
+    Lumiere.CC["5"] = Instance.new("Frame", Lumiere.CC["4"]);
+    Lumiere.CC["5"]["ZIndex"] = 2;
+    Lumiere.CC["5"]["BorderSizePixel"] = 0;
+    Lumiere.CC["5"]["BackgroundColor3"] = Color3.fromRGB(28, 36, 56);
+    Lumiere.CC["5"]["Size"] = UDim2.new(0, 611, 0, 1);
+    Lumiere.CC["5"]["Position"] = UDim2.new(0, 0, 1, 0);
+    Lumiere.CC["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["5"]["Name"] = [[Bar]];
 
-    local gameNameLabel = Instance.new("TextLabel", topBar)
-    gameNameLabel.BorderSizePixel = 0
-    gameNameLabel.TextSize = 15
-    gameNameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    gameNameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    gameNameLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-    gameNameLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    gameNameLabel.BackgroundTransparency = 1
-    gameNameLabel.Size = UDim2.new(0, 315, 0, 19)
-    gameNameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    gameNameLabel.Text = Window.GameName .. " - " .. Window.Version
-    gameNameLabel.Name = "GameName"
-    gameNameLabel.Position = UDim2.new(0.106, 0, 0.463, 0)
+    Lumiere.CC["6"] = Instance.new("ImageLabel", Lumiere.CC["4"]);
+    Lumiere.CC["6"]["Active"] = true;
+    Lumiere.CC["6"]["BorderSizePixel"] = 0;
+    Lumiere.CC["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["6"]["ImageColor3"] = Color3.fromRGB(32, 84, 201);
+    Lumiere.CC["6"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["6"]["Image"] = [[rbxassetid://110653068142193]];
+    Lumiere.CC["6"]["Size"] = UDim2.new(0, 85, 0, 87);
+    Lumiere.CC["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["6"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["6"]["Name"] = [[Logo]];
+    Lumiere.CC["6"]["Position"] = UDim2.new(0.05936, 0, 0.5, 0);
 
-    -- Control buttons container
-    local controlFrame = Instance.new("Frame", topBar)
-    controlFrame.BorderSizePixel = 0
-    controlFrame.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    controlFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    controlFrame.Size = UDim2.new(0, 133, 0, 38)
-    controlFrame.Position = UDim2.new(0.853, 0, 0.5, 0)
-    controlFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    controlFrame.Name = "Control"
-    Instance.new("UICorner", controlFrame).CornerRadius = UDim.new(0.22, 0)
-    local controlStroke = Instance.new("UIStroke", controlFrame)
-    controlStroke.Color = Color3.fromRGB(41, 41, 41)
+    Lumiere.CC["7"] = Instance.new("UIAspectRatioConstraint", Lumiere.CC["6"]);
 
-    local secondBar = Instance.new("Frame", controlFrame)
-    secondBar.BorderSizePixel = 0
-    secondBar.BackgroundColor3 = Color3.fromRGB(41, 41, 41)
-    secondBar.AnchorPoint = Vector2.new(0.5, 0.5)
-    secondBar.Size = UDim2.new(0, 1, 0, 37)
-    secondBar.Position = UDim2.new(0.65789, 0, 0.5, 0)
-    secondBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    secondBar.Name = "SecondBar"
+    Lumiere.CC["8"] = Instance.new("TextLabel", Lumiere.CC["4"]);
+    Lumiere.CC["8"]["BorderSizePixel"] = 0;
+    Lumiere.CC["8"]["TextSize"] = 15;
+    Lumiere.CC["8"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["8"]["TextYAlignment"] = Enum.TextYAlignment.Top;
+    Lumiere.CC["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["8"]["TextColor3"] = Color3.fromRGB(32, 84, 201);
+    Lumiere.CC["8"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["8"]["Size"] = UDim2.new(0, 68, 0, 19);
+    Lumiere.CC["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["8"]["Text"] = [[LUMIERE.CC]];
+    Lumiere.CC["8"]["Name"] = [[Title]];
+    Lumiere.CC["8"]["Position"] = UDim2.new(0.106, 0, 0.265, 0);
 
-    local firstBar = Instance.new("Frame", controlFrame)
-    firstBar.BorderSizePixel = 0
-    firstBar.BackgroundColor3 = Color3.fromRGB(41, 41, 41)
-    firstBar.AnchorPoint = Vector2.new(0.5, 0.5)
-    firstBar.Size = UDim2.new(0, 1, 0, 37)
-    firstBar.Position = UDim2.new(0.34211, 0, 0.5, 0)
-    firstBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    firstBar.Name = "Bar"
+    Lumiere.CC["9"] = Instance.new("TextLabel", Lumiere.CC["4"]);
+    Lumiere.CC["9"]["BorderSizePixel"] = 0;
+    Lumiere.CC["9"]["TextSize"] = 15;
+    Lumiere.CC["9"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["9"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["9"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["9"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["9"]["Size"] = UDim2.new(0, 315, 0, 19);
+    Lumiere.CC["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["9"]["Text"] = Window.GameName .. " - " .. Window.Version;
+    Lumiere.CC["9"]["Name"] = [[GameName]];
+    Lumiere.CC["9"]["Position"] = UDim2.new(0.106, 0, 0.463, 0);
 
-    -- Close button
-    local closeFrame = Instance.new("Frame", controlFrame)
-    closeFrame.BorderSizePixel = 0
-    closeFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    closeFrame.Size = UDim2.new(0, 45, 0, 38)
-    closeFrame.Position = UDim2.new(0.66165, 0, 0, 0)
-    closeFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    closeFrame.Name = "X"
-    closeFrame.BackgroundTransparency = 1
+    Lumiere.CC["a"] = Instance.new("Frame", Lumiere.CC["4"]);
+    Lumiere.CC["a"]["BorderSizePixel"] = 0;
+    Lumiere.CC["a"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["a"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["a"]["Size"] = UDim2.new(0, 133, 0, 38);
+    Lumiere.CC["a"]["Position"] = UDim2.new(0.853, 0, 0.5, 0);
+    Lumiere.CC["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["a"]["Name"] = [[Control]];
 
-    local closeImg = Instance.new("ImageLabel", closeFrame)
-    closeImg.BorderSizePixel = 0
-    closeImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    closeImg.ImageColor3 = Color3.fromRGB(126, 126, 126)
-    closeImg.AnchorPoint = Vector2.new(0.5, 0.5)
-    closeImg.Image = "rbxassetid://10747384394"
-    closeImg.Size = UDim2.new(0, 23, 0, 23)
-    closeImg.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    closeImg.BackgroundTransparency = 1
-    closeImg.Name = "Image"
-    closeImg.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Instance.new("UIAspectRatioConstraint", closeImg)
+    Lumiere.CC["b"] = Instance.new("UICorner", Lumiere.CC["a"]);
+    Lumiere.CC["b"]["CornerRadius"] = UDim.new(0.22, 0);
 
-    local closeTrigger = Instance.new("TextButton", closeFrame)
-    closeTrigger.BorderSizePixel = 0
-    closeTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    closeTrigger.TextSize = 14
-    closeTrigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    closeTrigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    closeTrigger.Size = UDim2.new(1, 0, 1, 0)
-    closeTrigger.BackgroundTransparency = 1
-    closeTrigger.Name = "Trigger"
-    closeTrigger.Text = ""
+    Lumiere.CC["c"] = Instance.new("Frame", Lumiere.CC["a"]);
+    Lumiere.CC["c"]["BorderSizePixel"] = 0;
+    Lumiere.CC["c"]["BackgroundColor3"] = Color3.fromRGB(28, 36, 56);
+    Lumiere.CC["c"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["c"]["Size"] = UDim2.new(0, 1, 0, 37);
+    Lumiere.CC["c"]["Position"] = UDim2.new(0.65789, 0, 0.5, 0);
+    Lumiere.CC["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["c"]["Name"] = [[SecondBar]];
 
-    -- Minimize button
-    local minFrame = Instance.new("Frame", controlFrame)
-    minFrame.BorderSizePixel = 0
-    minFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    minFrame.Size = UDim2.new(0, 42, 0, 38)
-    minFrame.Position = UDim2.new(0.34586, 0, 0, 0)
-    minFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    minFrame.Name = "Minimize"
-    minFrame.BackgroundTransparency = 1
+    Lumiere.CC["d"] = Instance.new("UIStroke", Lumiere.CC["a"]);
+    Lumiere.CC["d"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    local minImg = Instance.new("ImageLabel", minFrame)
-    minImg.BorderSizePixel = 0
-    minImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    minImg.ImageColor3 = Color3.fromRGB(126, 126, 126)
-    minImg.AnchorPoint = Vector2.new(0.5, 0.5)
-    minImg.Image = "rbxassetid://10734896206"
-    minImg.Size = UDim2.new(0, 23, 0, 23)
-    minImg.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    minImg.BackgroundTransparency = 1
-    minImg.Name = "Image"
-    minImg.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Instance.new("UIAspectRatioConstraint", minImg)
+    Lumiere.CC["e"] = Instance.new("Frame", Lumiere.CC["a"]);
+    Lumiere.CC["e"]["BorderSizePixel"] = 0;
+    Lumiere.CC["e"]["BackgroundColor3"] = Color3.fromRGB(28, 36, 56);
+    Lumiere.CC["e"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["e"]["Size"] = UDim2.new(0, 1, 0, 37);
+    Lumiere.CC["e"]["Position"] = UDim2.new(0.34211, 0, 0.5, 0);
+    Lumiere.CC["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["e"]["Name"] = [[Bar]];
 
-    local minTrigger = Instance.new("TextButton", minFrame)
-    minTrigger.BorderSizePixel = 0
-    minTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    minTrigger.TextSize = 14
-    minTrigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    minTrigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    minTrigger.Size = UDim2.new(1, 0, 1, 0)
-    minTrigger.BackgroundTransparency = 1
-    minTrigger.Name = "Trigger"
-    minTrigger.Text = ""
+    Lumiere.CC["f"] = Instance.new("Frame", Lumiere.CC["a"]);
+    Lumiere.CC["f"]["BorderSizePixel"] = 0;
+    Lumiere.CC["f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["f"]["Size"] = UDim2.new(0, 45, 0, 38);
+    Lumiere.CC["f"]["Position"] = UDim2.new(0.66165, 0, 0, 0);
+    Lumiere.CC["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["f"]["Name"] = [[X]];
+    Lumiere.CC["f"]["BackgroundTransparency"] = 1;
 
-    -- Discord invite button
-    local extraFrame = Instance.new("Frame", controlFrame)
-    extraFrame.BorderSizePixel = 0
-    extraFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    extraFrame.Size = UDim2.new(0, 45, 0, 38)
-    extraFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    extraFrame.Name = "Extra"
-    extraFrame.BackgroundTransparency = 1
+    Lumiere.CC["10"] = Instance.new("ImageLabel", Lumiere.CC["f"]);
+    Lumiere.CC["10"]["BorderSizePixel"] = 0;
+    Lumiere.CC["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["10"]["ImageColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["10"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["10"]["Image"] = [[rbxassetid://10747384394]];
+    Lumiere.CC["10"]["Size"] = UDim2.new(0, 23, 0, 23);
+    Lumiere.CC["10"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["10"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["10"]["Name"] = [[Image]];
+    Lumiere.CC["10"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
-    local extraImg = Instance.new("ImageLabel", extraFrame)
-    extraImg.BorderSizePixel = 0
-    extraImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    extraImg.ImageColor3 = Color3.fromRGB(126, 126, 126)
-    extraImg.AnchorPoint = Vector2.new(0.5, 0.5)
-    extraImg.Image = "rbxassetid://100831342781312"
-    extraImg.Size = UDim2.new(0, 23, 0, 23)
-    extraImg.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    extraImg.BackgroundTransparency = 1
-    extraImg.Name = "Image"
-    extraImg.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Instance.new("UIAspectRatioConstraint", extraImg)
+    Lumiere.CC["11"] = Instance.new("UIAspectRatioConstraint", Lumiere.CC["10"]);
 
-    local extraTrigger = Instance.new("TextButton", extraFrame)
-    extraTrigger.BorderSizePixel = 0
-    extraTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    extraTrigger.TextSize = 14
-    extraTrigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    extraTrigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    extraTrigger.Size = UDim2.new(1, 0, 1, 0)
-    extraTrigger.BackgroundTransparency = 1
-    extraTrigger.Name = "Trigger"
-    extraTrigger.Text = ""
+    Lumiere.CC["12"] = Instance.new("TextButton", Lumiere.CC["f"]);
+    Lumiere.CC["12"]["BorderSizePixel"] = 0;
+    Lumiere.CC["12"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["12"]["TextSize"] = 14;
+    Lumiere.CC["12"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["12"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["12"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["12"]["Name"] = [[Trigger]];
+    Lumiere.CC["12"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["12"]["Text"] = [[]];
 
-    -- Main window stroke
-    local mainStroke = Instance.new("UIStroke", Lumiere.CC["2"])
-    mainStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["13"] = Instance.new("LocalScript", Lumiere.CC["f"]);
+    Lumiere.CC["13"]["Name"] = [[Script]];
 
-    -- Left side (tab bar)
-    local leftFrame = Instance.new("Frame", Lumiere.CC["2"])
-    leftFrame.BorderSizePixel = 0
-    leftFrame.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    leftFrame.Size = UDim2.new(0, 183, 0, 383)
-    leftFrame.Position = UDim2.new(0, 0, 0.16558, 0)
-    leftFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    leftFrame.Name = "Left"
+    Lumiere.CC["14"] = Instance.new("Frame", Lumiere.CC["a"]);
+    Lumiere.CC["14"]["BorderSizePixel"] = 0;
+    Lumiere.CC["14"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["14"]["Size"] = UDim2.new(0, 42, 0, 38);
+    Lumiere.CC["14"]["Position"] = UDim2.new(0.34586, 0, 0, 0);
+    Lumiere.CC["14"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["14"]["Name"] = [[Minimize]];
+    Lumiere.CC["14"]["BackgroundTransparency"] = 1;
 
-    local leftBar = Instance.new("Frame", leftFrame)
-    leftBar.BorderSizePixel = 0
-    leftBar.BackgroundColor3 = Color3.fromRGB(41, 41, 41)
-    leftBar.Size = UDim2.new(0, 1, 0, 384)
-    leftBar.Position = UDim2.new(1, 0, 0, 0)
-    leftBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    leftBar.Name = "Bar"
+    Lumiere.CC["15"] = Instance.new("ImageLabel", Lumiere.CC["14"]);
+    Lumiere.CC["15"]["BorderSizePixel"] = 0;
+    Lumiere.CC["15"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["15"]["ImageColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["15"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["15"]["Image"] = [[rbxassetid://10734896206]];
+    Lumiere.CC["15"]["Size"] = UDim2.new(0, 23, 0, 23);
+    Lumiere.CC["15"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["15"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["15"]["Name"] = [[Image]];
+    Lumiere.CC["15"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
-    -- Tab scrolling layout
-    local tabScrolling = Instance.new("ScrollingFrame", leftFrame)
-    tabScrolling.Active = true
-    tabScrolling.BorderSizePixel = 0
-    tabScrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
-    tabScrolling.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    tabScrolling.Name = "Layout"
-    tabScrolling.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    tabScrolling.Size = UDim2.new(0, 183, 0, 363)
-    tabScrolling.ScrollBarImageColor3 = Color3.fromRGB(114, 83, 255)
-    tabScrolling.Position = UDim2.new(0, 0, 0.026, 0)
-    tabScrolling.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    tabScrolling.ScrollBarThickness = 0
-    tabScrolling.BackgroundTransparency = 1
+    Lumiere.CC["16"] = Instance.new("UIAspectRatioConstraint", Lumiere.CC["15"]);
 
-    local tabPadding = Instance.new("UIPadding", tabScrolling)
-    tabPadding.PaddingTop = UDim.new(0, 1)
-    tabPadding.PaddingBottom = UDim.new(0, 1)
+    Lumiere.CC["17"] = Instance.new("TextButton", Lumiere.CC["14"]);
+    Lumiere.CC["17"]["BorderSizePixel"] = 0;
+    Lumiere.CC["17"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["17"]["TextSize"] = 14;
+    Lumiere.CC["17"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["17"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["17"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["17"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["17"]["Name"] = [[Trigger]];
+    Lumiere.CC["17"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["17"]["Text"] = [[]];
 
-    local tabLayout = Instance.new("UIListLayout", tabScrolling)
-    tabLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    tabLayout.Padding = UDim.new(0, 7)
-    tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    Lumiere.CC["18"] = Instance.new("LocalScript", Lumiere.CC["14"]);
+    Lumiere.CC["18"]["Name"] = [[Script]];
 
-    -- Tabs container
-    local tabsFolder = Instance.new("Folder", Lumiere.CC["2"])
-    tabsFolder.Name = "Tabs"
+    Lumiere.CC["19"] = Instance.new("Frame", Lumiere.CC["a"]);
+    Lumiere.CC["19"]["BorderSizePixel"] = 0;
+    Lumiere.CC["19"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["19"]["Size"] = UDim2.new(0, 45, 0, 38);
+    Lumiere.CC["19"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["19"]["Name"] = [[Extra]];
+    Lumiere.CC["19"]["BackgroundTransparency"] = 1;
 
-    -- Notification holder
-    local notifHolder = Instance.new("Frame", Lumiere.CC["1"])
-    notifHolder.Interactable = false
-    notifHolder.BorderSizePixel = 0
-    notifHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    notifHolder.Size = UDim2.new(0, 280, 1, -40)
-    notifHolder.Position = UDim2.new(1, -290, 0, 20)
-    notifHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    notifHolder.Name = "NotificationHolder"
-    notifHolder.BackgroundTransparency = 1
+    Lumiere.CC["1a"] = Instance.new("ImageLabel", Lumiere.CC["19"]);
+    Lumiere.CC["1a"]["BorderSizePixel"] = 0;
+    Lumiere.CC["1a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["1a"]["ImageColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["1a"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["1a"]["Image"] = [[rbxassetid://100831342781312]];
+    Lumiere.CC["1a"]["Size"] = UDim2.new(0, 23, 0, 23);
+    Lumiere.CC["1a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["1a"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["1a"]["Name"] = [[Image]];
+    Lumiere.CC["1a"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
-    local notifLayout = Instance.new("UIListLayout", notifHolder)
-    notifLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-    notifLayout.Padding = UDim.new(0, 10)
-    notifLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-    notifLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    Lumiere.CC["1b"] = Instance.new("UIAspectRatioConstraint", Lumiere.CC["1a"]);
 
-    -- Mobile toggle button
-    local mobileButton = Instance.new("Frame", Lumiere.CC["1"])
-    mobileButton.Visible = false
-    mobileButton.Interactable = false
-    mobileButton.BorderSizePixel = 0
-    mobileButton.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    mobileButton.AnchorPoint = Vector2.new(0.5, 0.5)
-    mobileButton.Size = UDim2.new(0, 60, 0, 60)
-    mobileButton.Position = UDim2.new(0.1, 0, -0.25, 0)
-    mobileButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    mobileButton.Name = "MobileButton"
+    Lumiere.CC["1c"] = Instance.new("TextButton", Lumiere.CC["19"]);
+    Lumiere.CC["1c"]["BorderSizePixel"] = 0;
+    Lumiere.CC["1c"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["1c"]["TextSize"] = 14;
+    Lumiere.CC["1c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["1c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["1c"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["1c"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["1c"]["Name"] = [[Trigger]];
+    Lumiere.CC["1c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["1c"]["Text"] = [[]];
 
-    Instance.new("UICorner", mobileButton).CornerRadius = UDim.new(0.2, 0)
-    local mobStroke = Instance.new("UIStroke", mobileButton)
-    mobStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["1d"] = Instance.new("LocalScript", Lumiere.CC["19"]);
+    Lumiere.CC["1d"]["Name"] = [[Script]];
 
-    local mobLogo = Instance.new("ImageLabel", mobileButton)
-    mobLogo.Active = true
-    mobLogo.BorderSizePixel = 0
-    mobLogo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    mobLogo.ImageColor3 = Color3.fromRGB(114, 83, 255)
-    mobLogo.AnchorPoint = Vector2.new(0.5, 0.5)
-    mobLogo.Image = "rbxassetid://110653068142193"
-    mobLogo.Size = UDim2.new(0, 72, 0, 72)
-    mobLogo.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    mobLogo.BackgroundTransparency = 1
-    mobLogo.Name = "Logo"
-    mobLogo.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Instance.new("UIAspectRatioConstraint", mobLogo)
+    Lumiere.CC["1e"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["1e"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    local mobTrigger = Instance.new("TextButton", mobileButton)
-    mobTrigger.BorderSizePixel = 0
-    mobTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    mobTrigger.TextSize = 14
-    mobTrigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    mobTrigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    mobTrigger.Size = UDim2.new(1, 0, 1, 0)
-    mobTrigger.BackgroundTransparency = 1
-    mobTrigger.Name = "Trigger"
-    mobTrigger.Text = ""
+    Lumiere.CC["1f"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["1f"]["BorderSizePixel"] = 0;
+    Lumiere.CC["1f"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["1f"]["Size"] = UDim2.new(0, 183, 0, 383);
+    Lumiere.CC["1f"]["Position"] = UDim2.new(0, 0, 0.16558, 0);
+    Lumiere.CC["1f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["1f"]["Name"] = [[Left]];
 
-    -- ==================== SCRIPTS ====================
-    -- Close button functionality
-    task.spawn(function()
-        local function onCloseHoverEnter()
-            TweenService:Create(closeImg, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) }):Play()
-        end
-        local function onCloseHoverLeave()
-            TweenService:Create(closeImg, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) }):Play()
-        end
-        closeImg.MouseEnter:Connect(onCloseHoverEnter)
-        closeImg.MouseLeave:Connect(onCloseHoverLeave)
-        closeTrigger.MouseButton1Down:Connect(function()
-            Lumiere.CC["1"]:Destroy()
-        end)
-    end)
+    Lumiere.CC["20"] = Instance.new("Frame", Lumiere.CC["1f"]);
+    Lumiere.CC["20"]["BorderSizePixel"] = 0;
+    Lumiere.CC["20"]["BackgroundColor3"] = Color3.fromRGB(28, 36, 56);
+    Lumiere.CC["20"]["Size"] = UDim2.new(0, 1, 0, 384);
+    Lumiere.CC["20"]["Position"] = UDim2.new(1, 0, 0, 0);
+    Lumiere.CC["20"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["20"]["Name"] = [[Bar]];
 
-    -- Minimize button functionality
-    local isMobile = not (UserInputService.KeyboardEnabled and UserInputService.MouseEnabled)
-    task.spawn(function()
-        local function onMinHoverEnter()
-            TweenService:Create(minImg, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) }):Play()
-        end
-        local function onMinHoverLeave()
-            TweenService:Create(minImg, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) }):Play()
-        end
-        minImg.MouseEnter:Connect(onMinHoverEnter)
-        minImg.MouseLeave:Connect(onMinHoverLeave)
-        minTrigger.MouseButton1Down:Connect(function()
-            if Lumiere.CC["2"].Visible then
-                Lumiere.CC["2"].Visible = false
-                if isMobile then
-                    mobileButton.Visible = true
-                    mobileButton.Interactable = true
-                    TweenService:Create(mobileButton, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-                        Position = UDim2.new(0.1, 0, 0.25, 0)
-                    }):Play()
-                else
-                    local toggleKey = tostring(tabsFolder:WaitForChild("Settings").Scroll.Layout["Toggle UI"].Keybind:GetAttribute("Key"))
-                    CreateNotification("Press " .. toggleKey .. " to show user interface again.", 3)
-                    Lumiere.CC["2"]:SetAttribute("Minimized", true)
-                end
-            end
-        end)
-    end)
+    Lumiere.CC["21"] = Instance.new("ScrollingFrame", Lumiere.CC["1f"]);
+    Lumiere.CC["21"]["Active"] = true;
+    Lumiere.CC["21"]["BorderSizePixel"] = 0;
+    Lumiere.CC["21"]["CanvasSize"] = UDim2.new(0, 0, 0, 0);
+    Lumiere.CC["21"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["21"]["Name"] = [[Layout]];
+    Lumiere.CC["21"]["AutomaticCanvasSize"] = Enum.AutomaticSize.Y;
+    Lumiere.CC["21"]["Size"] = UDim2.new(0, 183, 0, 363);
+    Lumiere.CC["21"]["ScrollBarImageColor3"] = Color3.fromRGB(32, 84, 201);
+    Lumiere.CC["21"]["Position"] = UDim2.new(0, 0, 0.026, 0);
+    Lumiere.CC["21"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["21"]["ScrollBarThickness"] = 0;
+    Lumiere.CC["21"]["BackgroundTransparency"] = 1;
 
-    -- Discord button functionality
-    task.spawn(function()
-        local function onExtraHoverEnter()
-            TweenService:Create(extraImg, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) }):Play()
-        end
-        local function onExtraHoverLeave()
-            TweenService:Create(extraImg, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) }):Play()
-        end
-        extraImg.MouseEnter:Connect(onExtraHoverEnter)
-        extraImg.MouseLeave:Connect(onExtraHoverLeave)
-        extraTrigger.MouseButton1Down:Connect(function()
-            if setclipboard then
-                setclipboard("https://discord.com/invite/MDjNwamSS9")
-            end
-            CreateNotification("Successfully copied Discord link to the clipboard.", 3)
-        end)
-    end)
+    Lumiere.CC["22"] = Instance.new("UIPadding", Lumiere.CC["21"]);
+    Lumiere.CC["22"]["PaddingTop"] = UDim.new(0, 1);
+    Lumiere.CC["22"]["PaddingBottom"] = UDim.new(0, 1);
 
-    -- Drag functionality
-    task.spawn(function()
-        local dragging = false
-        local dragStart
-        local startPos
-        local function isMainPart(obj)
-            return obj and (obj == Lumiere.CC["2"] or obj:IsDescendantOf(Lumiere.CC["2"]))
-        end
-        local function shouldBlockDrag(obj)
-            return obj and (obj:IsA("TextButton") or obj:IsA("ImageButton") or obj:IsDescendantOf(tabsFolder) or obj == tabsFolder)
-        end
-        UserInputService.InputBegan:Connect(function(input, gameProcessed)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                local objects = CoreGui:GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
-                local valid, forbidden = false, false
-                for _, obj in ipairs(objects) do
-                    if shouldBlockDrag(obj) then forbidden = true; break
-                    elseif isMainPart(obj) then valid = true end
-                end
-                if valid and not forbidden then
-                    dragging = true
-                    dragStart = input.Position
-                    startPos = Lumiere.CC["2"].Position
-                end
-            end
-        end)
-        UserInputService.InputChanged:Connect(function(input)
-            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-                local delta = input.Position - dragStart
-                Lumiere.CC["2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-            end
-        end)
-        UserInputService.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = false
-            end
-        end)
-    end)
+    Lumiere.CC["23"] = Instance.new("UIListLayout", Lumiere.CC["21"]);
+    Lumiere.CC["23"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+    Lumiere.CC["23"]["Padding"] = UDim.new(0, 7);
+    Lumiere.CC["23"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
 
-    -- Mobile button functionality
-    task.spawn(function()
-        mobTrigger.MouseButton1Down:Connect(function()
-            mobileButton.Interactable = false
-            local hideTween = TweenService:Create(mobileButton, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-                Position = UDim2.new(0.1, 0, -0.25, 0)
-            })
-            hideTween:Play()
-            hideTween.Completed:Connect(function()
-                mobileButton.Visible = false
-                Lumiere.CC["2"].Visible = true
-            end)
-        end)
-    end)
+    Lumiere.CC["24"] = Instance.new("Folder", Lumiere.CC["2"]);
+    Lumiere.CC["24"]["Name"] = [[Tabs]];
 
-    return Window
+    Lumiere.CC["25"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["25"]["Name"] = [[Script]];
+
+    Lumiere.CC["26"] = Instance.new("Frame", Lumiere.CC["1"]);
+    Lumiere.CC["26"]["Interactable"] = false;
+    Lumiere.CC["26"]["BorderSizePixel"] = 0;
+    Lumiere.CC["26"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["26"]["Size"] = UDim2.new(0, 280, 1, -40);
+    Lumiere.CC["26"]["Position"] = UDim2.new(1, -290, 0, 20);
+    Lumiere.CC["26"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["26"]["Name"] = [[NotificationHolder]];
+    Lumiere.CC["26"]["BackgroundTransparency"] = 1;
+
+    Lumiere.CC["27"] = Instance.new("UIListLayout", Lumiere.CC["26"]);
+    Lumiere.CC["27"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Right;
+    Lumiere.CC["27"]["Padding"] = UDim.new(0, 10);
+    Lumiere.CC["27"]["VerticalAlignment"] = Enum.VerticalAlignment.Bottom;
+    Lumiere.CC["27"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+    Lumiere.CC["28"] = Instance.new("Frame", Lumiere.CC["1"]);
+    Lumiere.CC["28"]["Visible"] = false;
+    Lumiere.CC["28"]["Interactable"] = false;
+    Lumiere.CC["28"]["BorderSizePixel"] = 0;
+    Lumiere.CC["28"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["28"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["28"]["Size"] = UDim2.new(0, 60, 0, 60);
+    Lumiere.CC["28"]["Position"] = UDim2.new(0.1, 0, -0.25, 0);
+    Lumiere.CC["28"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["28"]["Name"] = [[MobileButton]];
+
+    Lumiere.CC["29"] = Instance.new("UICorner", Lumiere.CC["28"]);
+    Lumiere.CC["29"]["CornerRadius"] = UDim.new(0.2, 0);
+
+    Lumiere.CC["2a"] = Instance.new("UIStroke", Lumiere.CC["28"]);
+    Lumiere.CC["2a"]["Color"] = Color3.fromRGB(28, 36, 56);
+
+    Lumiere.CC["2b"] = Instance.new("ImageLabel", Lumiere.CC["28"]);
+    Lumiere.CC["2b"]["Active"] = true;
+    Lumiere.CC["2b"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["2b"]["ImageColor3"] = Color3.fromRGB(32, 84, 201);
+    Lumiere.CC["2b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["2b"]["Image"] = [[rbxassetid://110653068142193]];
+    Lumiere.CC["2b"]["Size"] = UDim2.new(0, 72, 0, 72);
+    Lumiere.CC["2b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2b"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["2b"]["Name"] = [[Logo]];
+    Lumiere.CC["2b"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+    Lumiere.CC["2c"] = Instance.new("UIAspectRatioConstraint", Lumiere.CC["2b"]);
+
+    Lumiere.CC["2d"] = Instance.new("TextButton", Lumiere.CC["28"]);
+    Lumiere.CC["2d"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2d"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2d"]["TextSize"] = 14;
+    Lumiere.CC["2d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["2d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["2d"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["2d"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["2d"]["Name"] = [[Trigger]];
+    Lumiere.CC["2d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2d"]["Text"] = [[]];
+
+    Lumiere.CC["2e"] = Instance.new("LocalScript", Lumiere.CC["28"]);
+    Lumiere.CC["2e"]["Name"] = [[Script]];
+
+    local function C_13()
+        local script = Lumiere.CC["13"];
+        local TweenService = game:GetService("TweenService")
+        local TextService = game:GetService("TextService")
+
+        local Holder = script.Parent.Parent.Parent.Parent.Parent:WaitForChild("NotificationHolder")
+
+        function CreateNotification(Text, Duration)
+            local Duration = Duration or 5
+            local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+                Enum.FontStyle.Normal)
+            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+                Enum.FontStyle.Normal)
+
+            local Notif = Instance.new("CanvasGroup")
+            Notif.Name = "Notification"
+            Notif.Size = UDim2.new(1, 0, 0, 0)
+            Notif.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+            Notif.GroupTransparency = 1
+            Notif.BorderSizePixel = 0
+            Notif.Parent = Holder
+
+            local ScaleObj = Instance.new("UIScale", Notif)
+            ScaleObj.Scale = 0.8
+
+            local UICorner = Instance.new("UICorner", Notif)
+            UICorner.CornerRadius = UDim.new(0, 10)
+
+            local UIStroke = Instance.new("UIStroke", Notif)
+            UIStroke.Color = Color3.fromRGB(35, 35, 35)
+            UIStroke.Thickness = 1
+            UIStroke.Transparency = 1
+
+            local TitleLabel = Instance.new("TextLabel", Notif)
+            TitleLabel.Name = "Title"
+            TitleLabel.Size = UDim2.new(1, -30, 0, 20)
+            TitleLabel.Position = UDim2.new(0, 15, 0, 15)
+            TitleLabel.BackgroundTransparency = 1
+            TitleLabel.FontFace = GothamBoldFont
+            TitleLabel.Text = "LUMIERE.CC"
+            TitleLabel.TextColor3 = Color3.fromRGB(32, 84, 201)
+            TitleLabel.TextSize = 13
+            TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+            local DescLabel = Instance.new("TextLabel", Notif)
+            DescLabel.Name = "Description"
+            DescLabel.BackgroundTransparency = 1
+            DescLabel.FontFace = GothamSemiFont
+            DescLabel.Text = Text
+            DescLabel.TextColor3 = Color3.fromRGB(132, 146, 176)
+            DescLabel.TextSize = 14
+            DescLabel.TextWrapped = true
+            DescLabel.TextXAlignment = Enum.TextXAlignment.Left
+            DescLabel.TextYAlignment = Enum.TextYAlignment.Top
+
+            local paddingX = 30
+            local topMargin = 35
+            local bottomPadding = 28
+
+            local maxWidth = Holder.AbsoluteSize.X - paddingX
+            local textSize = TextService:GetTextSize(Text, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
+
+            local targetHeight = textSize.Y + topMargin + bottomPadding
+            targetHeight = math.clamp(targetHeight, 80, 300)
+
+            DescLabel.Position = UDim2.new(0, 15, 0, topMargin)
+            DescLabel.Size = UDim2.new(1, -paddingX, 0, textSize.Y)
+
+            TweenService:Create(Notif, tInfo, { Size = UDim2.new(1, 0, 0, targetHeight), GroupTransparency = 0 }):Play()
+            TweenService:Create(ScaleObj, tInfo, { Scale = 1 }):Play()
+            TweenService:Create(UIStroke, tInfo, { Transparency = 0 }):Play()
+
+            local TimerBar = Instance.new("Frame", Notif)
+            TimerBar.Name = "Timer"
+            TimerBar.Size = UDim2.new(1, -24, 0, 2)
+            TimerBar.Position = UDim2.new(0, 12, 1, -8)
+            TimerBar.BackgroundColor3 = Color3.fromRGB(32, 84, 201)
+            TimerBar.BorderSizePixel = 0
+            TimerBar.ZIndex = 2
+
+            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear),
+                { Size = UDim2.new(0, 0, 0, 2) }):Play()
+
+            task.delay(Duration, function()
+                local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
+                TweenService:Create(ScaleObj, tInfo, { Scale = 0.8 }):Play()
+                TweenService:Create(UIStroke, tInfo, { Transparency = 1 }):Play()
+                fadeOut:Play()
+                fadeOut.Completed:Connect(function()
+                    Notif:Destroy()
+                end)
+            end)
+        end
+
+        script.Parent.MouseEnter:Connect(function()
+            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(32, 84, 201) })
+                :Play()
+        end)
+
+        script.Parent.MouseLeave:Connect(function()
+            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(132, 146, 176) })
+                :Play()
+        end)
+
+        script.Parent.Trigger.MouseButton1Down:Connect(function()
+            script.Parent.Parent.Parent.Parent.Visible = false
+            CreateNotification("Successfully destroyed user interface.", 3)
+            task.wait(4)
+            script.Parent.Parent.Parent.Parent.Parent:Destroy()
+        end)
+    end;
+    task.spawn(C_13);
+
+    local function C_18()
+        local script = Lumiere.CC["18"];
+        local TweenService = game:GetService("TweenService")
+        local UserInputService = game:GetService("UserInputService")
+        local TextService = game:GetService("TextService")
+
+        local CloseButton = script.Parent
+        local MainFrame = CloseButton.Parent.Parent.Parent.Parent:WaitForChild("Main")
+        local MobileButton = MainFrame.Parent:FindFirstChild("MobileButton")
+
+        local Holder = MainFrame.Parent:WaitForChild("NotificationHolder")
+
+        local isMobile = not (UserInputService.KeyboardEnabled and UserInputService.MouseEnabled)
+
+        local ToggleKey
+
+        function CreateNotification(Text, Duration)
+            local Duration = Duration or 5
+            local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+                Enum.FontStyle.Normal)
+            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+                Enum.FontStyle.Normal)
+
+            local Notif = Instance.new("CanvasGroup")
+            Notif.Name = "Notification"
+            Notif.Size = UDim2.new(1, 0, 0, 0)
+            Notif.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+            Notif.GroupTransparency = 1
+            Notif.BorderSizePixel = 0
+            Notif.Parent = Holder
+
+            local ScaleObj = Instance.new("UIScale", Notif)
+            ScaleObj.Scale = 0.8
+
+            local UICorner = Instance.new("UICorner", Notif)
+            UICorner.CornerRadius = UDim.new(0, 10)
+
+            local UIStroke = Instance.new("UIStroke", Notif)
+            UIStroke.Color = Color3.fromRGB(35, 35, 35)
+            UIStroke.Thickness = 1
+            UIStroke.Transparency = 1
+
+            local TitleLabel = Instance.new("TextLabel", Notif)
+            TitleLabel.Name = "Title"
+            TitleLabel.Size = UDim2.new(1, -30, 0, 20)
+            TitleLabel.Position = UDim2.new(0, 15, 0, 15)
+            TitleLabel.BackgroundTransparency = 1
+            TitleLabel.FontFace = GothamBoldFont
+            TitleLabel.Text = "LUMIERE.CC"
+            TitleLabel.TextColor3 = Color3.fromRGB(32, 84, 201)
+            TitleLabel.TextSize = 13
+            TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+            local DescLabel = Instance.new("TextLabel", Notif)
+            DescLabel.Name = "Description"
+            DescLabel.BackgroundTransparency = 1
+            DescLabel.FontFace = GothamSemiFont
+            DescLabel.Text = Text
+            DescLabel.TextColor3 = Color3.fromRGB(132, 146, 176)
+            DescLabel.TextSize = 14
+            DescLabel.TextWrapped = true
+            DescLabel.TextXAlignment = Enum.TextXAlignment.Left
+            DescLabel.TextYAlignment = Enum.TextYAlignment.Top
+
+            local paddingX = 30
+            local topMargin = 35
+            local bottomPadding = 28
+
+            local maxWidth = Holder.AbsoluteSize.X - paddingX
+            local textSize = TextService:GetTextSize(Text, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
+
+            local targetHeight = textSize.Y + topMargin + bottomPadding
+            targetHeight = math.clamp(targetHeight, 80, 300)
+
+            DescLabel.Position = UDim2.new(0, 15, 0, topMargin)
+            DescLabel.Size = UDim2.new(1, -paddingX, 0, textSize.Y)
+
+            TweenService:Create(Notif, tInfo, { Size = UDim2.new(1, 0, 0, targetHeight), GroupTransparency = 0 }):Play()
+            TweenService:Create(ScaleObj, tInfo, { Scale = 1 }):Play()
+            TweenService:Create(UIStroke, tInfo, { Transparency = 0 }):Play()
+
+            local TimerBar = Instance.new("Frame", Notif)
+            TimerBar.Name = "Timer"
+            TimerBar.Size = UDim2.new(1, -24, 0, 2)
+            TimerBar.Position = UDim2.new(0, 12, 1, -8)
+            TimerBar.BackgroundColor3 = Color3.fromRGB(32, 84, 201)
+            TimerBar.BorderSizePixel = 0
+            TimerBar.ZIndex = 2
+
+            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear),
+                { Size = UDim2.new(0, 0, 0, 2) }):Play()
+
+            task.delay(Duration, function()
+                local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
+                TweenService:Create(ScaleObj, tInfo, { Scale = 0.8 }):Play()
+                TweenService:Create(UIStroke, tInfo, { Transparency = 1 }):Play()
+                fadeOut:Play()
+                fadeOut.Completed:Connect(function()
+                    Notif:Destroy()
+                end)
+            end)
+        end
+
+        CloseButton.MouseEnter:Connect(function()
+            TweenService:Create(CloseButton.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(32, 84, 201) })
+                :Play()
+        end)
+
+        CloseButton.MouseLeave:Connect(function()
+            TweenService:Create(CloseButton.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(132, 146, 176) })
+                :Play()
+        end)
+
+        CloseButton.Trigger.MouseButton1Down:Connect(function()
+            if MainFrame then
+                MainFrame.Visible = false
+            end
+
+            if isMobile and MobileButton then
+                MobileButton.Visible = true
+                MobileButton.Interactable = true
+                TweenService:Create(MobileButton, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+                    Position = UDim2.new(0.1, 0, 0.25, 0)
+                }):Play()
+            elseif not isMobile then
+                ToggleKey = tostring(game.CoreGui["Lumiere.CC"].Main.Tabs:WaitForChild("Settings").Scroll.Layout["Toggle UI"]
+                .Keybind:GetAttribute("Key"))
+                if script.Parent.Parent.Parent.Parent:GetAttribute("Minimized") == false then
+                    CreateNotification("Press " .. ToggleKey .. " to show user interface again.", 3)
+                    script.Parent.Parent.Parent.Parent:SetAttribute("Minimized", true)
+                end
+            end
+        end)
+    end;
+    task.spawn(C_18);
+
+    local function C_1d()
+        local script = Lumiere.CC["1d"];
+        local TweenService = game:GetService("TweenService")
+        local TextService = game:GetService("TextService")
+
+        local Holder = script.Parent.Parent.Parent.Parent.Parent:WaitForChild("NotificationHolder")
+
+        function CreateNotification(Text, Duration)
+            local Duration = Duration or 5
+            local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+                Enum.FontStyle.Normal)
+            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+                Enum.FontStyle.Normal)
+
+            local Notif = Instance.new("CanvasGroup")
+            Notif.Name = "Notification"
+            Notif.Size = UDim2.new(1, 0, 0, 0)
+            Notif.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+            Notif.GroupTransparency = 1
+            Notif.BorderSizePixel = 0
+            Notif.Parent = Holder
+
+            local ScaleObj = Instance.new("UIScale", Notif)
+            ScaleObj.Scale = 0.8
+
+            local UICorner = Instance.new("UICorner", Notif)
+            UICorner.CornerRadius = UDim.new(0, 10)
+
+            local UIStroke = Instance.new("UIStroke", Notif)
+            UIStroke.Color = Color3.fromRGB(35, 35, 35)
+            UIStroke.Thickness = 1
+            UIStroke.Transparency = 1
+
+            local TitleLabel = Instance.new("TextLabel", Notif)
+            TitleLabel.Name = "Title"
+            TitleLabel.Size = UDim2.new(1, -30, 0, 20)
+            TitleLabel.Position = UDim2.new(0, 15, 0, 15)
+            TitleLabel.BackgroundTransparency = 1
+            TitleLabel.FontFace = GothamBoldFont
+            TitleLabel.Text = "LUMIERE.CC"
+            TitleLabel.TextColor3 = Color3.fromRGB(32, 84, 201)
+            TitleLabel.TextSize = 13
+            TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+            local DescLabel = Instance.new("TextLabel", Notif)
+            DescLabel.Name = "Description"
+            DescLabel.BackgroundTransparency = 1
+            DescLabel.FontFace = GothamSemiFont
+            DescLabel.Text = Text
+            DescLabel.TextColor3 = Color3.fromRGB(132, 146, 176)
+            DescLabel.TextSize = 14
+            DescLabel.TextWrapped = true
+            DescLabel.TextXAlignment = Enum.TextXAlignment.Left
+            DescLabel.TextYAlignment = Enum.TextYAlignment.Top
+
+            local paddingX = 30
+            local topMargin = 35
+            local bottomPadding = 28
+
+            local maxWidth = Holder.AbsoluteSize.X - paddingX
+            local textSize = TextService:GetTextSize(Text, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
+
+            local targetHeight = textSize.Y + topMargin + bottomPadding
+            targetHeight = math.clamp(targetHeight, 80, 300)
+
+            DescLabel.Position = UDim2.new(0, 15, 0, topMargin)
+            DescLabel.Size = UDim2.new(1, -paddingX, 0, textSize.Y)
+
+            TweenService:Create(Notif, tInfo, { Size = UDim2.new(1, 0, 0, targetHeight), GroupTransparency = 0 }):Play()
+            TweenService:Create(ScaleObj, tInfo, { Scale = 1 }):Play()
+            TweenService:Create(UIStroke, tInfo, { Transparency = 0 }):Play()
+
+            local TimerBar = Instance.new("Frame", Notif)
+            TimerBar.Name = "Timer"
+            TimerBar.Size = UDim2.new(1, -24, 0, 2)
+            TimerBar.Position = UDim2.new(0, 12, 1, -8)
+            TimerBar.BackgroundColor3 = Color3.fromRGB(32, 84, 201)
+            TimerBar.BorderSizePixel = 0
+            TimerBar.ZIndex = 2
+
+            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear),
+                { Size = UDim2.new(0, 0, 0, 2) }):Play()
+
+            task.delay(Duration, function()
+                local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
+                TweenService:Create(ScaleObj, tInfo, { Scale = 0.8 }):Play()
+                TweenService:Create(UIStroke, tInfo, { Transparency = 1 }):Play()
+                fadeOut:Play()
+                fadeOut.Completed:Connect(function()
+                    Notif:Destroy()
+                end)
+            end)
+        end
+
+        script.Parent.MouseEnter:Connect(function()
+            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(32, 84, 201) })
+                :Play()
+        end)
+
+        script.Parent.MouseLeave:Connect(function()
+            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(132, 146, 176) })
+                :Play()
+        end)
+
+        script.Parent.Trigger.MouseButton1Down:Connect(function()
+            if setclipboard then
+                setclipboard("https://discord.com/invite/MDjNwamSS9")
+            end
+            CreateNotification("Successfully copied Discord link to the clipboard.", 3)
+        end)
+    end;
+    task.spawn(C_1d);
+
+    local function C_25()
+        local script = Lumiere.CC["25"];
+        local UserInputService = game:GetService("UserInputService")
+        local Players = game:GetService("Players")
+
+        local main = script.Parent
+        local tabsFolder = main:WaitForChild("Tabs")
+
+        local dragging = false
+        local dragStart
+        local startPos
+
+        local function isMainPart(obj)
+            if not obj then return false end
+            return obj == main or obj:IsDescendantOf(main)
+        end
+
+        local function shouldBlockDrag(obj)
+            if not obj then return false end
+            return obj:IsA("TextButton") or obj:IsA("ImageButton") or obj:IsDescendantOf(tabsFolder) or obj == tabsFolder
+        end
+
+        UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                local playerGui = game:WaitForChild("CoreGui") or Players.LocalPlayer:WaitForChild("PlayerGui")
+                local objects = playerGui:GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
+
+                local validTarget = false
+                local forbidden = false
+
+                for _, obj in ipairs(objects) do
+                    if shouldBlockDrag(obj) then
+                        forbidden = true
+                        break
+                    elseif isMainPart(obj) then
+                        validTarget = true
+                    end
+                end
+
+                if validTarget and not forbidden then
+                    dragging = true
+                    dragStart = input.Position
+                    startPos = main.Position
+                end
+            end
+        end)
+
+        UserInputService.InputChanged:Connect(function(input)
+            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                local delta = input.Position - dragStart
+                main.Position = UDim2.new(
+                    startPos.X.Scale,
+                    startPos.X.Offset + delta.X,
+                    startPos.Y.Scale,
+                    startPos.Y.Offset + delta.Y
+                )
+            end
+        end)
+
+        UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = false
+            end
+        end)
+    end;
+    task.spawn(C_25);
+
+    local function C_2e()
+        local script = Lumiere.CC["2e"];
+        local TweenService = game:GetService("TweenService")
+
+        local MobileButton = script.Parent
+        local Trigger = MobileButton:WaitForChild("Trigger")
+        local MainFrame = MobileButton.Parent:WaitForChild("Main")
+
+        local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+
+        Trigger.MouseButton1Down:Connect(function()
+            MobileButton.Interactable = false
+
+            local hideTween = TweenService:Create(MobileButton, tInfo, {
+                Position = UDim2.new(0.1, 0, -0.25, 0)
+            })
+
+            hideTween:Play()
+
+            hideTween.Completed:Connect(function()
+                MobileButton.Visible = false
+                if MainFrame then
+                    MainFrame.Visible = true
+                end
+            end)
+        end)
+    end;
+    task.spawn(C_2e);
+
+    return Window
 end
 
--- ==================== TAB CONSTRUCTION ====================
 function LumiereLibrary:Tab(params)
-    local Tab = {}
-    Tab.Name = params.Name
-    Tab.Image = params.Image
-    Tab.Selected = params.Selected
+    local Tab = {}
 
-    local main = game.CoreGui.Lumiere.CC.Main
-    local leftLayout = main.Left.Layout
+    Tab.Name = params.Name
+    Tab.Image = params.Image
+    Tab.Selected = params.Selected
 
-    local tabBtn = Instance.new("Frame", leftLayout)
-    tabBtn.BorderSizePixel = 0
-    tabBtn.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    tabBtn.Size = UDim2.new(0, 157, 0, 35)
-    tabBtn.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    tabBtn.Name = Tab.Name
-    tabBtn.BackgroundTransparency = 1
+    local Lumiere.CC = {}
 
-    Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0.25, 0)
-    local btnStroke = Instance.new("UIStroke", tabBtn)
-    btnStroke.Transparency = 1
-    btnStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["2"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Left.Layout);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 157, 0, 35);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.07104, 0, 0, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = Tab.Name;
+    Lumiere.CC["2"]["BackgroundTransparency"] = 1;
 
-    local tabNameLabel = Instance.new("TextLabel", tabBtn)
-    tabNameLabel.BorderSizePixel = 0
-    tabNameLabel.TextSize = 14
-    tabNameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    tabNameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    tabNameLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    tabNameLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    tabNameLabel.BackgroundTransparency = 1
-    tabNameLabel.Size = UDim2.new(0.76535, 0, 1, 0)
-    tabNameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    tabNameLabel.Text = Tab.Name
-    tabNameLabel.Name = "TabName"
-    tabNameLabel.Position = UDim2.new(0.23465, 0, 0, 0)
+    Lumiere.CC["3"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["CornerRadius"] = UDim.new(0.25, 0);
 
-    local tabPadding = Instance.new("UIPadding", tabNameLabel)
-    tabPadding.PaddingBottom = UDim.new(0, 2)
+    Lumiere.CC["4"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["4"]["Transparency"] = 1;
+    Lumiere.CC["4"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    local tabImg = Instance.new("ImageLabel", tabBtn)
-    tabImg.BorderSizePixel = 0
-    tabImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    tabImg.ImageColor3 = Color3.fromRGB(126, 126, 126)
-    tabImg.AnchorPoint = Vector2.new(0.5, 0.5)
-    tabImg.Image = Tab.Image
-    tabImg.Size = UDim2.new(0, 20, 0, 20)
-    tabImg.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    tabImg.BackgroundTransparency = 1
-    tabImg.Name = "Image"
-    tabImg.Position = UDim2.new(0.13, 0, 0.5, 0)
-    Instance.new("UIAspectRatioConstraint", tabImg)
+    Lumiere.CC["5"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["5"]["BorderSizePixel"] = 0;
+    Lumiere.CC["5"]["TextSize"] = 14;
+    Lumiere.CC["5"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["5"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["5"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["5"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["5"]["Size"] = UDim2.new(0.76535, 0, 1, 0);
+    Lumiere.CC["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["5"]["Text"] = Tab.Name;
+    Lumiere.CC["5"]["Name"] = [[TabName]];
+    Lumiere.CC["5"]["Position"] = UDim2.new(0.23465, 0, 0, 0);
 
-    local activeBar = Instance.new("Frame", tabBtn)
-    activeBar.BorderSizePixel = 0
-    activeBar.BackgroundColor3 = Color3.fromRGB(114, 83, 255)
-    activeBar.AnchorPoint = Vector2.new(0.5, 0.5)
-    activeBar.Size = UDim2.new(0, 4, 0, 18)
-    activeBar.Position = UDim2.new(0, 0, 0.5, 0)
-    activeBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    activeBar.Name = "Bar"
-    activeBar.BackgroundTransparency = 1
-    Instance.new("UICorner", activeBar)
+    Lumiere.CC["6"] = Instance.new("UIPadding", Lumiere.CC["5"]);
+    Lumiere.CC["6"]["PaddingBottom"] = UDim.new(0, 2);
 
-    local trigger = Instance.new("TextButton", tabBtn)
-    trigger.BorderSizePixel = 0
-    trigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    trigger.TextSize = 14
-    trigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    trigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    trigger.Size = UDim2.new(1, 0, 1, 0)
-    trigger.BackgroundTransparency = 1
-    trigger.Name = "Trigger"
-    trigger.Text = ""
+    Lumiere.CC["7"] = Instance.new("ImageLabel", Lumiere.CC["2"]);
+    Lumiere.CC["7"]["BorderSizePixel"] = 0;
+    Lumiere.CC["7"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["7"]["ImageColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["7"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["7"]["Image"] = Tab.Image;
+    Lumiere.CC["7"]["Size"] = UDim2.new(0, 20, 0, 20);
+    Lumiere.CC["7"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["7"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["7"]["Name"] = [[Image]];
+    Lumiere.CC["7"]["Position"] = UDim2.new(0.13, 0, 0.5, 0);
 
-    -- Tab content frame
-    local tabContent = Instance.new("Frame", main.Tabs)
-    tabContent.Visible = false
-    tabContent.Interactable = false
-    tabContent.BorderSizePixel = 0
-    tabContent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    tabContent.Size = UDim2.new(0, 410, 0, 371)
-    tabContent.Position = UDim2.new(0.31751, 0, 0.17429, 0)
-    tabContent.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    tabContent.Name = Tab.Name
-    tabContent.BackgroundTransparency = 1
+    Lumiere.CC["8"] = Instance.new("UIAspectRatioConstraint", Lumiere.CC["7"]);
 
-    local scroll = Instance.new("ScrollingFrame", tabContent)
-    scroll.Active = true
-    scroll.BorderSizePixel = 0
-    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-    scroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    scroll.Name = "Scroll"
-    scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    scroll.Size = UDim2.new(1.00244, 0, 1.01078, 0)
-    scroll.ScrollBarImageColor3 = Color3.fromRGB(114, 83, 255)
-    scroll.Position = UDim2.new(-0.00244, 0, -0.01078, 0)
-    scroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    scroll.ScrollBarThickness = 0
-    scroll.BackgroundTransparency = 1
+    Lumiere.CC["9"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["9"]["BorderSizePixel"] = 0;
+    Lumiere.CC["9"]["BackgroundColor3"] = Color3.fromRGB(32, 84, 201);
+    Lumiere.CC["9"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["9"]["Size"] = UDim2.new(0, 4, 0, 18);
+    Lumiere.CC["9"]["Position"] = UDim2.new(0, 0, 0.5, 0);
+    Lumiere.CC["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["9"]["Name"] = [[Bar]];
+    Lumiere.CC["9"]["BackgroundTransparency"] = 1;
 
-    local scrollLayout = Instance.new("Frame", scroll)
-    scrollLayout.BorderSizePixel = 0
-    scrollLayout.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    scrollLayout.Size = UDim2.new(0.98783, 0, 15.22455, 0)
-    scrollLayout.Position = UDim2.new(0.00243, 0, 0.01348, 0)
-    scrollLayout.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    scrollLayout.Name = "Layout"
-    scrollLayout.BackgroundTransparency = 1
+    Lumiere.CC["a"] = Instance.new("UICorner", Lumiere.CC["9"]);
 
-    local listLayout = Instance.new("UIListLayout", scrollLayout)
-    listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-    listLayout.Padding = UDim.new(0, 10)
-    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    Lumiere.CC["b"] = Instance.new("TextButton", Lumiere.CC["2"]);
+    Lumiere.CC["b"]["BorderSizePixel"] = 0;
+    Lumiere.CC["b"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["b"]["TextSize"] = 14;
+    Lumiere.CC["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["b"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["b"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["b"]["Name"] = [[Trigger]];
+    Lumiere.CC["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["b"]["Text"] = [[]];
 
-    local scrollPadding = Instance.new("UIPadding", scrollLayout)
-    scrollPadding.PaddingTop = UDim.new(0, 5)
-    scrollPadding.PaddingBottom = UDim.new(0, 8)
+    Lumiere.CC["c"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["c"]["Name"] = [[Script]];
 
-    -- Tab switching logic
-    task.spawn(function()
-        local CenterPos = UDim2.new(0.318, 0, 0.174, 0)
-        local RightPos = UDim2.new(1.1, 0, 0.174, 0)
-        local AnimDuration = 0.25
-        local TInfo = TweenInfo.new(AnimDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-        local TabsFolder = main.Tabs
-        local TabButtonsFolder = leftLayout
+    Lumiere.CC["d"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Tabs);
+    Lumiere.CC["d"]["Visible"] = false;
+    Lumiere.CC["d"]["Interactable"] = false;
+    Lumiere.CC["d"]["BorderSizePixel"] = 0;
+    Lumiere.CC["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["d"]["Size"] = UDim2.new(0, 410, 0, 371);
+    Lumiere.CC["d"]["Position"] = UDim2.new(0.31751, 0, 0.17429, 0);
+    Lumiere.CC["d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["d"]["Name"] = Tab.Name;
+    Lumiere.CC["d"]["BackgroundTransparency"] = 1;
 
-        local IsTabActive = Tab.Selected
-        local IsAnimating = false
-        local Color_Active = Color3.fromRGB(113, 82, 255)
-        local Color_Inactive = Color3.fromRGB(125, 125, 125)
+    Lumiere.CC["e"] = Instance.new("ScrollingFrame", Lumiere.CC["d"]);
+    Lumiere.CC["e"]["Active"] = true;
+    Lumiere.CC["e"]["BorderSizePixel"] = 0;
+    Lumiere.CC["e"]["CanvasSize"] = UDim2.new(0, 0, 0, 0);
+    Lumiere.CC["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["e"]["Name"] = [[Scroll]];
+    Lumiere.CC["e"]["AutomaticCanvasSize"] = Enum.AutomaticSize.Y;
+    Lumiere.CC["e"]["Size"] = UDim2.new(1.00244, 0, 1.01078, 0);
+    Lumiere.CC["e"]["ScrollBarImageColor3"] = Color3.fromRGB(32, 84, 201);
+    Lumiere.CC["e"]["Position"] = UDim2.new(-0.00244, 0, -0.01078, 0);
+    Lumiere.CC["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["e"]["ScrollBarThickness"] = 0;
+    Lumiere.CC["e"]["BackgroundTransparency"] = 1;
 
-        if Tab.Selected then
-            activeBar.BackgroundTransparency = 0
-            tabBtn.BackgroundTransparency = 0
-            tabImg.ImageColor3 = Color_Active
-            tabNameLabel.TextColor3 = Color_Active
-            btnStroke.Transparency = 0
-            tabContent.Visible = true
-            tabContent.Interactable = true
-            tabContent.Position = CenterPos
-        else
-            tabContent.Visible = false
-            tabContent.Interactable = false
-            tabContent.Position = RightPos
-        end
+    Lumiere.CC["f"] = Instance.new("Frame", Lumiere.CC["e"]);
+    Lumiere.CC["f"]["BorderSizePixel"] = 0;
+    Lumiere.CC["f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["f"]["Size"] = UDim2.new(0.98783, 0, 15.22455, 0);
+    Lumiere.CC["f"]["Position"] = UDim2.new(0.00243, 0, 0.01348, 0);
+    Lumiere.CC["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["f"]["Name"] = [[Layout]];
+    Lumiere.CC["f"]["BackgroundTransparency"] = 1;
 
-        trigger.MouseButton1Down:Connect(function()
-            if IsTabActive or IsAnimating then return end
-            IsAnimating = true
-            IsTabActive = true
+    Lumiere.CC["10"] = Instance.new("UIListLayout", Lumiere.CC["f"]);
+    Lumiere.CC["10"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Right;
+    Lumiere.CC["10"]["Padding"] = UDim.new(0, 10);
+    Lumiere.CC["10"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
 
-            TweenService:Create(activeBar, TInfo, { BackgroundTransparency = 0 }):Play()
-            TweenService:Create(tabBtn, TInfo, { BackgroundTransparency = 0 }):Play()
-            TweenService:Create(tabImg, TInfo, { ImageColor3 = Color_Active }):Play()
-            TweenService:Create(tabNameLabel, TInfo, { TextColor3 = Color_Active }):Play()
-            TweenService:Create(btnStroke, TInfo, { Transparency = 0 }):Play()
+    Lumiere.CC["11"] = Instance.new("UIPadding", Lumiere.CC["f"]);
+    Lumiere.CC["11"]["PaddingTop"] = UDim.new(0, 5);
+    Lumiere.CC["11"]["PaddingBottom"] = UDim.new(0, 8);
 
-            for _, btn in pairs(TabButtonsFolder:GetChildren()) do
-                if btn:IsA("Frame") and btn ~= tabBtn then
-                    TweenService:Create(btn.Bar, TInfo, { BackgroundTransparency = 1 }):Play()
-                    TweenService:Create(btn, TInfo, { BackgroundTransparency = 1 }):Play()
-                    TweenService:Create(btn.Image, TInfo, { ImageColor3 = Color_Inactive }):Play()
-                    TweenService:Create(btn.TabName, TInfo, { TextColor3 = Color_Inactive }):Play()
-                    TweenService:Create(btn.UIStroke, TInfo, { Transparency = 1 }):Play()
-                end
-            end
+    local function C_c()
+        local script = Lumiere.CC["c"];
+        local TweenService = game:GetService("TweenService")
 
-            local oldTab = nil
-            for _, tab in pairs(TabsFolder:GetChildren()) do
-                if tab:IsA("GuiObject") and tab.Visible and tab.Name ~= Tab.Name then
-                    oldTab = tab
-                    break
-                end
-            end
+        local CenterPos = UDim2.new(0.318, 0, 0.174, 0)
+        local RightPos = UDim2.new(1.1, 0, 0.174, 0)
+        local AnimDuration = 0.25
+        local TInfo = TweenInfo.new(AnimDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
-            if oldTab then
-                oldTab.Interactable = false
-                local slideOut = TweenService:Create(oldTab, TInfo, { Position = RightPos })
-                slideOut:Play()
-                task.wait(AnimDuration * 0.8)
-                oldTab.Visible = false
-            end
+        local TabsFolder = script.Parent.Parent.Parent.Parent.Tabs
+        local TabButtonsFolder = script.Parent.Parent
+        local CurrentTabContent = TabsFolder[script.Parent.Name]
 
-            tabContent.Position = RightPos
-            tabContent.Visible = true
-            tabContent.Interactable = true
-            local slideIn = TweenService:Create(tabContent, TInfo, { Position = CenterPos })
-            slideIn:Play()
-            slideIn.Completed:Connect(function()
-                IsAnimating = false
-            end)
-        end)
-    end)
+        local IsTabActive = false
+        local IsAnimating = false
 
-    return Tab
+        local Color_Active = Color3.fromRGB(32, 84, 201)
+        local Color_Inactive = Color3.fromRGB(132, 146, 176)
+
+        local Active = Tab.Selected
+        if Active then
+            IsTabActive = true
+            script.Parent.Bar.BackgroundTransparency = 0
+            script.Parent.BackgroundTransparency = 0
+            script.Parent.Image.ImageColor3 = Color_Active
+            script.Parent.TabName.TextColor3 = Color_Active
+            script.Parent.UIStroke.Transparency = 0
+
+            CurrentTabContent.Visible = true
+            CurrentTabContent.Interactable = true
+            CurrentTabContent.Position = CenterPos
+        else
+            CurrentTabContent.Visible = false
+            CurrentTabContent.Interactable = false
+            CurrentTabContent.Position = RightPos
+        end
+
+        script.Parent.Trigger.MouseButton1Down:Connect(function()
+            if IsTabActive or IsAnimating then return end
+
+            IsAnimating = true
+            IsTabActive = true
+
+            TweenService:Create(script.Parent.Bar, TInfo, { BackgroundTransparency = 0 }):Play()
+            TweenService:Create(script.Parent, TInfo, { BackgroundTransparency = 0 }):Play()
+            TweenService:Create(script.Parent.Image, TInfo, { ImageColor3 = Color_Active }):Play()
+            TweenService:Create(script.Parent.TabName, TInfo, { TextColor3 = Color_Active }):Play()
+            TweenService:Create(script.Parent.UIStroke, TInfo, { Transparency = 0 }):Play()
+
+            for _, Btn in pairs(TabButtonsFolder:GetChildren()) do
+                if Btn:IsA("Frame") and Btn ~= script.Parent then
+                    TweenService:Create(Btn.Bar, TInfo, { BackgroundTransparency = 1 }):Play()
+                    TweenService:Create(Btn, TInfo, { BackgroundTransparency = 1 }):Play()
+                    TweenService:Create(Btn.Image, TInfo, { ImageColor3 = Color_Inactive }):Play()
+                    TweenService:Create(Btn.TabName, TInfo, { TextColor3 = Color_Inactive }):Play()
+                    TweenService:Create(Btn.UIStroke, TInfo, { Transparency = 1 }):Play()
+                end
+            end
+
+            local OldTab = nil
+            for _, TabLoop in pairs(TabsFolder:GetChildren()) do
+                if TabLoop:IsA("GuiObject") and TabLoop.Visible and TabLoop.Name ~= script.Parent.Name then
+                    OldTab = TabLoop
+                    break
+                end
+            end
+
+            if OldTab then
+                OldTab.Interactable = false
+                local SlideOut = TweenService:Create(OldTab, TInfo, { Position = RightPos })
+                SlideOut:Play()
+
+                task.wait(AnimDuration * 0.8)
+                OldTab.Visible = false
+            end
+
+            CurrentTabContent.Position = RightPos
+            CurrentTabContent.Visible = true
+            CurrentTabContent.Interactable = true
+
+            local SlideIn = TweenService:Create(CurrentTabContent, TInfo, { Position = CenterPos })
+            SlideIn:Play()
+
+            SlideIn.Completed:Connect(function()
+                IsAnimating = false
+            end)
+        end)
+
+        TabButtonsFolder.ChildAdded:Connect(function(child)
+            if child:IsA("Frame") and child:FindFirstChild("Trigger") then
+                child.Trigger.MouseButton1Down:Connect(function()
+                    IsTabActive = false
+                end)
+            end
+        end)
+
+        for _, OtherBtn in pairs(TabButtonsFolder:GetChildren()) do
+            if OtherBtn:IsA("Frame") and OtherBtn ~= script.Parent then
+                OtherBtn.Trigger.MouseButton1Down:Connect(function()
+                    IsTabActive = false
+                end)
+            end
+        end
+    end;
+    task.spawn(C_c);
+
+    return Tab
 end
 
--- ==================== COMPONENTS ====================
 function LumiereLibrary:Button(params)
-    local Button = {}
-    Button.Name = params.Name
-    Button.Parent = params.Parent
-    Button.Callback = params.Callback or function() end
+    local Button = {}
 
-    local tabContent = game.CoreGui.Lumiere.CC.Main.Tabs[Button.Parent]
-    local layout = tabContent.Scroll.Layout
+    Button.Name = params.Name
+    Button.Parent = params.Parent
+    Button.Callback = params.Callback or function() end
 
-    local btnFrame = Instance.new("Frame", layout)
-    btnFrame.BorderSizePixel = 0
-    btnFrame.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    btnFrame.Size = UDim2.new(0, 405, 0, 49)
-    btnFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    btnFrame.Name = Button.Name
+    local Lumiere.CC = {}
 
-    local btnImg = Instance.new("ImageLabel", btnFrame)
-    btnImg.BorderSizePixel = 0
-    btnImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    btnImg.ImageColor3 = Color3.fromRGB(126, 126, 126)
-    btnImg.AnchorPoint = Vector2.new(0.5, 0.5)
-    btnImg.Image = "rbxassetid://10734898194"
-    btnImg.Size = UDim2.new(0, 30, 0, 30)
-    btnImg.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    btnImg.BackgroundTransparency = 1
-    btnImg.Name = "Image"
-    btnImg.Position = UDim2.new(0.93175, 0, 0.483, 0)
-    Instance.new("UIAspectRatioConstraint", btnImg)
+    Lumiere.CC["2"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Tabs[Button.Parent].Scroll.Layout);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 405, 0, 49);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.00246, 0, 0, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = Button.Name;
 
-    local btnLabel = Instance.new("TextLabel", btnFrame)
-    btnLabel.TextWrapped = true
-    btnLabel.BorderSizePixel = 0
-    btnLabel.TextSize = 15
-    btnLabel.TextXAlignment = Enum.TextXAlignment.Left
-    btnLabel.TextScaled = true
-    btnLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    btnLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    btnLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    btnLabel.BackgroundTransparency = 1
-    btnLabel.AnchorPoint = Vector2.new(0, 0.5)
-    btnLabel.Size = UDim2.new(0.74366, 0, 1, 0)
-    btnLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    btnLabel.Text = Button.Name
-    btnLabel.Name = "ComponentName"
-    btnLabel.Position = UDim2.new(0, 15, 0, 24)
+    Lumiere.CC["3"] = Instance.new("ImageLabel", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["BorderSizePixel"] = 0;
+    Lumiere.CC["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["3"]["ImageColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["3"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["3"]["Image"] = [[rbxassetid://10734898194]];
+    Lumiere.CC["3"]["Size"] = UDim2.new(0, 30, 0, 30);
+    Lumiere.CC["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["3"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["3"]["Name"] = [[Image]];
+    Lumiere.CC["3"]["Position"] = UDim2.new(0.93175, 0, 0.483, 0);
 
-    local labelPadding = Instance.new("UIPadding", btnLabel)
-    labelPadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", btnLabel).MaxTextSize = 15
+    Lumiere.CC["4"] = Instance.new("UIAspectRatioConstraint", Lumiere.CC["3"]);
 
-    local btnStroke = Instance.new("UIStroke", btnFrame)
-    btnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    btnStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["5"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["5"]["TextWrapped"] = true;
+    Lumiere.CC["5"]["BorderSizePixel"] = 0;
+    Lumiere.CC["5"]["TextSize"] = 15;
+    Lumiere.CC["5"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["5"]["TextScaled"] = true;
+    Lumiere.CC["5"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["5"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["5"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["5"]["AnchorPoint"] = Vector2.new(0, 0.5);
+    Lumiere.CC["5"]["Size"] = UDim2.new(0.74366, 0, 1, 0);
+    Lumiere.CC["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["5"]["Text"] = Button.Name;
+    Lumiere.CC["5"]["Name"] = [[ComponentName]];
+    Lumiere.CC["5"]["Position"] = UDim2.new(0, 15, 0, 24);
 
-    Instance.new("UICorner", btnFrame).CornerRadius = UDim.new(0.12, 0)
+    Lumiere.CC["6"] = Instance.new("UIPadding", Lumiere.CC["5"]);
+    Lumiere.CC["6"]["PaddingBottom"] = UDim.new(0, 2);
 
-    local trigger = Instance.new("TextButton", btnFrame)
-    trigger.BorderSizePixel = 0
-    trigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    trigger.TextSize = 14
-    trigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    trigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    trigger.Size = UDim2.new(1, 0, 1, 0)
-    trigger.BackgroundTransparency = 1
-    trigger.Name = "Trigger"
-    trigger.Text = ""
+    Lumiere.CC["7"] = Instance.new("UITextSizeConstraint", Lumiere.CC["5"]);
+    Lumiere.CC["7"]["MaxTextSize"] = 15;
 
-    task.spawn(function()
-        local DefaultColor = Color3.fromRGB(125, 125, 125)
-        local ClickColor = Color3.fromRGB(113, 82, 255)
-        local tInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+    Lumiere.CC["8"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["8"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["8"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-        trigger.MouseButton1Down:Connect(function()
-            TweenService:Create(btnLabel, tInfo, { TextColor3 = ClickColor }):Play()
-            TweenService:Create(btnImg, tInfo, { ImageColor3 = ClickColor }):Play()
-            Button.Callback()
-        end)
+    Lumiere.CC["9"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["9"]["CornerRadius"] = UDim.new(0.12, 0);
 
-        local function resetColor()
-            TweenService:Create(btnLabel, tInfo, { TextColor3 = DefaultColor }):Play()
-            TweenService:Create(btnImg, tInfo, { ImageColor3 = DefaultColor }):Play()
-        end
-        trigger.MouseButton1Up:Connect(resetColor)
-        trigger.MouseLeave:Connect(resetColor)
-    end)
+    Lumiere.CC["a"] = Instance.new("TextButton", Lumiere.CC["2"]);
+    Lumiere.CC["a"]["BorderSizePixel"] = 0;
+    Lumiere.CC["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["a"]["TextSize"] = 14;
+    Lumiere.CC["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["a"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["a"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["a"]["Name"] = [[Trigger]];
+    Lumiere.CC["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["a"]["Text"] = [[]];
 
-    return Button
+    Lumiere.CC["b"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["b"]["Name"] = [[Script]];
+
+    local function C_b()
+        local script = Lumiere.CC["b"];
+        local TweenService = game:GetService("TweenService")
+
+        local function CreateButton(ButtonContainer, Callback)
+            local Trigger = ButtonContainer:WaitForChild("Trigger")
+            local ComponentName = ButtonContainer:WaitForChild("ComponentName")
+            local Icon = ButtonContainer:WaitForChild("Image")
+
+            local DefaultColor = Color3.fromRGB(132, 146, 176)
+            local ClickColor = Color3.fromRGB(32, 84, 201)
+
+            local tInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+            Trigger.MouseButton1Down:Connect(function()
+                TweenService:Create(ComponentName, tInfo, { TextColor3 = ClickColor }):Play()
+                TweenService:Create(Icon, tInfo, { ImageColor3 = ClickColor }):Play()
+
+                if Callback then
+                    Callback()
+                end
+            end)
+
+            local function ResetColor()
+                TweenService:Create(ComponentName, tInfo, { TextColor3 = DefaultColor }):Play()
+                TweenService:Create(Icon, tInfo, { ImageColor3 = DefaultColor }):Play()
+            end
+
+            Trigger.MouseButton1Up:Connect(ResetColor)
+            Trigger.MouseLeave:Connect(ResetColor)
+        end
+
+        CreateButton(script.Parent, function()
+            Button.Callback()
+        end)
+    end;
+    task.spawn(C_b);
+
+    return Button
 end
 
 function LumiereLibrary:Toggle(params)
-    local Toggle = {}
-    Toggle.Name = params.Name
-    Toggle.Parent = params.Parent
-    Toggle.Default = params.Default or false
-    Toggle.UseKeybind = params.UseKeybind or false
-    Toggle.DefaultKey = params.DefaultKey or Enum.KeyCode.Unknown
-    Toggle.Callback = params.Callback or function() end
+    local Toggle = {}
 
-    local tabContent = game.CoreGui.Lumiere.CC.Main.Tabs[Toggle.Parent]
-    local layout = tabContent.Scroll.Layout
+    Toggle.Name = params.Name
+    Toggle.Parent = params.Parent
+    Toggle.Default = params.Default or false
+    Toggle.UseKeybind = params.UseKeybind or false
+    Toggle.DefaultKey = params.DefaultKey or Enum.KeyCode.Unknown
+    Toggle.Callback = params.Callback or function() end
 
-    local toggleFrame = Instance.new("Frame", layout)
-    toggleFrame.BorderSizePixel = 0
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    toggleFrame.Size = UDim2.new(0, 405, 0, 49)
-    toggleFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    toggleFrame.Name = Toggle.Name
+    local Lumiere.CC = {}
 
-    local nameLabel = Instance.new("TextLabel", toggleFrame)
-    nameLabel.TextWrapped = true
-    nameLabel.BorderSizePixel = 0
-    nameLabel.TextSize = 15
-    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    nameLabel.TextScaled = true
-    nameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    nameLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    nameLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    nameLabel.BackgroundTransparency = 1
-    nameLabel.AnchorPoint = Vector2.new(0, 0.5)
-    nameLabel.Size = UDim2.new(0.74366, 0, 1, 0)
-    nameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    nameLabel.Text = Toggle.Name
-    nameLabel.Name = "ComponentName"
-    nameLabel.Position = UDim2.new(0, 15, 0, 24)
+    Lumiere.CC["2"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Tabs[Toggle.Parent].Scroll.Layout);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 405, 0, 49);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.00246, 0, 0, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = Toggle.Name;
 
-    local namePadding = Instance.new("UIPadding", nameLabel)
-    namePadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", nameLabel).MaxTextSize = 15
+    Lumiere.CC["3"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["TextWrapped"] = true;
+    Lumiere.CC["3"]["BorderSizePixel"] = 0;
+    Lumiere.CC["3"]["TextSize"] = 15;
+    Lumiere.CC["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["3"]["TextScaled"] = true;
+    Lumiere.CC["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["3"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["3"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
+    Lumiere.CC["3"]["Size"] = UDim2.new(0.74366, 0, 1, 0);
+    Lumiere.CC["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["3"]["Text"] = Toggle.Name;
+    Lumiere.CC["3"]["Name"] = [[ComponentName]];
+    Lumiere.CC["3"]["Position"] = UDim2.new(0, 15, 0, 24);
 
-    Instance.new("UIStroke", toggleFrame).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    Instance.new("UIStroke", toggleFrame).Color = Color3.fromRGB(36, 36, 36)
-    Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0.12, 0)
+    Lumiere.CC["4"] = Instance.new("UIPadding", Lumiere.CC["3"]);
+    Lumiere.CC["4"]["PaddingBottom"] = UDim.new(0, 2);
 
-    local toggleSwitch = Instance.new("Frame", toggleFrame)
-    toggleSwitch.BorderSizePixel = 0
-    toggleSwitch.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    toggleSwitch.AnchorPoint = Vector2.new(0.5, 0.5)
-    toggleSwitch.Size = UDim2.new(0, 51, 0, 25)
-    toggleSwitch.Position = UDim2.new(0.89877, 0, 0.483, 0)
-    toggleSwitch.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    toggleSwitch.Name = "Toggle"
+    Lumiere.CC["5"] = Instance.new("UITextSizeConstraint", Lumiere.CC["3"]);
+    Lumiere.CC["5"]["MaxTextSize"] = 15;
 
-    local switchStroke = Instance.new("UIStroke", toggleSwitch)
-    switchStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    switchStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["6"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["6"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    Instance.new("UICorner", toggleSwitch).CornerRadius = UDim.new(1, 0)
+    Lumiere.CC["7"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["7"]["CornerRadius"] = UDim.new(0.12, 0);
 
-    local dot = Instance.new("Frame", toggleSwitch)
-    dot.BorderSizePixel = 0
-    dot.BackgroundColor3 = Color3.fromRGB(126, 126, 126)
-    dot.AnchorPoint = Vector2.new(0.5, 0.5)
-    dot.Size = UDim2.new(0, 20, 0, 20)
-    dot.Position = UDim2.new(0.8, 0, 0.5, 0)
-    dot.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    dot.Name = "Dot"
-    Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
+    Lumiere.CC["8"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["8"]["BorderSizePixel"] = 0;
+    Lumiere.CC["8"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["8"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["8"]["Size"] = UDim2.new(0, 51, 0, 25);
+    Lumiere.CC["8"]["Position"] = UDim2.new(0.89877, 0, 0.483, 0);
+    Lumiere.CC["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["8"]["Name"] = [[Toggle]];
 
-    local switchTrigger = Instance.new("TextButton", toggleSwitch)
-    switchTrigger.BorderSizePixel = 0
-    switchTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    switchTrigger.TextSize = 14
-    switchTrigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    switchTrigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    switchTrigger.Size = UDim2.new(1, 0, 1, 0)
-    switchTrigger.BackgroundTransparency = 1
-    switchTrigger.Name = "Trigger"
-    switchTrigger.Text = ""
+    Lumiere.CC["9"] = Instance.new("UIStroke", Lumiere.CC["8"]);
+    Lumiere.CC["9"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["9"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    local keybindFrame = Instance.new("Frame", toggleFrame)
-    keybindFrame.Visible = Toggle.UseKeybind and UserInputService.KeyboardEnabled
-    keybindFrame.BorderSizePixel = 0
-    keybindFrame.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    keybindFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    keybindFrame.Size = UDim2.new(0, 30, 0, 30)
-    keybindFrame.Position = UDim2.new(0.77, 0, 0.483, 0)
-    keybindFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    keybindFrame.Name = "Keybind"
-    keybindFrame:SetAttribute("Key", "nil")
+    Lumiere.CC["a"] = Instance.new("UICorner", Lumiere.CC["8"]);
+    Lumiere.CC["a"]["CornerRadius"] = UDim.new(1, 0);
 
-    local keyStroke = Instance.new("UIStroke", keybindFrame)
-    keyStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    keyStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["b"] = Instance.new("Frame", Lumiere.CC["8"]);
+    Lumiere.CC["b"]["BorderSizePixel"] = 0;
+    Lumiere.CC["b"]["BackgroundColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["b"]["Size"] = UDim2.new(0, 20, 0, 20);
+    Lumiere.CC["b"]["Position"] = UDim2.new(0.8, 0, 0.5, 0);
+    Lumiere.CC["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["b"]["Name"] = [[Dot]];
 
-    Instance.new("UICorner", keybindFrame).CornerRadius = UDim.new(0.25, 0)
+    Lumiere.CC["c"] = Instance.new("UICorner", Lumiere.CC["b"]);
+    Lumiere.CC["c"]["CornerRadius"] = UDim.new(1, 0);
 
-    local keyText = Instance.new("TextLabel", keybindFrame)
-    keyText.TextWrapped = true
-    keyText.BorderSizePixel = 0
-    keyText.TextSize = 14
-    keyText.TextScaled = true
-    keyText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    keyText.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    keyText.TextColor3 = Color3.fromRGB(126, 126, 126)
-    keyText.BackgroundTransparency = 1
-    keyText.AnchorPoint = Vector2.new(0.5, 0.5)
-    keyText.Size = UDim2.new(1, 0, 1, 0)
-    keyText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    keyText.Text = "?"
-    keyText.Name = "KeyText"
-    keyText.Position = UDim2.new(0.5, 0, 0.5, 0)
+    Lumiere.CC["d"] = Instance.new("TextButton", Lumiere.CC["8"]);
+    Lumiere.CC["d"]["BorderSizePixel"] = 0;
+    Lumiere.CC["d"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["d"]["TextSize"] = 14;
+    Lumiere.CC["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["d"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["d"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["d"]["Name"] = [[Trigger]];
+    Lumiere.CC["d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["d"]["Text"] = [[]];
 
-    local keyPadding = Instance.new("UIPadding", keyText)
-    keyPadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", keyText).MaxTextSize = 14
+    Lumiere.CC["e"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["e"]["Name"] = [[Script]];
 
-    local keyTrigger = Instance.new("TextButton", keybindFrame)
-    keyTrigger.BorderSizePixel = 0
-    keyTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    keyTrigger.TextSize = 14
-    keyTrigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    keyTrigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    keyTrigger.Size = UDim2.new(1, 0, 1, 0)
-    keyTrigger.BackgroundTransparency = 1
-    keyTrigger.Name = "Trigger"
-    keyTrigger.Text = ""
+    Lumiere.CC["f"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["f"]["Visible"] = false;
+    Lumiere.CC["f"]["BorderSizePixel"] = 0;
+    Lumiere.CC["f"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["f"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["f"]["Size"] = UDim2.new(0, 30, 0, 30);
+    Lumiere.CC["f"]["Position"] = UDim2.new(0.77, 0, 0.483, 0);
+    Lumiere.CC["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["f"]["Name"] = [[Keybind]];
 
-    task.spawn(function()
-        local isOn = Toggle.Default
-        local currentKey = Toggle.DefaultKey
-        local isListening = false
-        local tInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+    Lumiere.CC["f"]:SetAttribute([[Key]], [[nil]]);
 
-        local function updateVisuals(instant)
-            local curTInfo = instant and TweenInfo.new(0) or tInfo
-            local targetPos = isOn and UDim2.new(0.8, 0, 0.5, 0) or UDim2.new(0.2, 0, 0.5, 0)
-            local targetColor = isOn and Color3.fromRGB(113, 82, 255) or Color3.fromRGB(150, 150, 150)
-            TweenService:Create(dot, curTInfo, { Position = targetPos, BackgroundColor3 = targetColor }):Play()
-        end
+    Lumiere.CC["10"] = Instance.new("UIStroke", Lumiere.CC["f"]);
+    Lumiere.CC["10"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["10"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-        local function toggle()
-            isOn = not isOn
-            updateVisuals(false)
-            Toggle.Callback(isOn)
-        end
+    Lumiere.CC["11"] = Instance.new("UICorner", Lumiere.CC["f"]);
+    Lumiere.CC["11"]["CornerRadius"] = UDim.new(0.25, 0);
 
-        switchTrigger.MouseButton1Click:Connect(toggle)
+    Lumiere.CC["12"] = Instance.new("TextLabel", Lumiere.CC["f"]);
+    Lumiere.CC["12"]["TextWrapped"] = true;
+    Lumiere.CC["12"]["BorderSizePixel"] = 0;
+    Lumiere.CC["12"]["TextSize"] = 14;
+    Lumiere.CC["12"]["TextScaled"] = true;
+    Lumiere.CC["12"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["12"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["12"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["12"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["12"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["12"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["12"]["Text"] = [[?]];
+    Lumiere.CC["12"]["Name"] = [[KeyText]];
+    Lumiere.CC["12"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
-        if Toggle.UseKeybind and UserInputService.KeyboardEnabled then
-            keyText.Text = (currentKey == Enum.KeyCode.Unknown and "NONE") or currentKey.Name
-            keyTrigger.MouseButton1Click:Connect(function()
-                if isListening then return end
-                isListening = true
-                keyText.Text = "..."
-                local conn
-                conn = UserInputService.InputBegan:Connect(function(input)
-                    local keyPressed = nil
-                    if input.UserInputType == Enum.UserInputType.Keyboard then
-                        keyPressed = (input.KeyCode == Enum.KeyCode.Escape) and Enum.KeyCode.Unknown or input.KeyCode
-                    elseif input.UserInputType == Enum.UserInputType.MouseButton2 or input.UserInputType == Enum.UserInputType.MouseButton3 then
-                        keyPressed = input.UserInputType
-                    end
-                    if keyPressed then
-                        conn:Disconnect()
-                        currentKey = keyPressed
-                        keyText.Text = (keyPressed == Enum.KeyCode.Unknown) and "NONE" or keyPressed.Name
-                        keybindFrame:SetAttribute("Key", keyText.Text)
-                        isListening = false
-                    end
-                end)
-            end)
+    Lumiere.CC["13"] = Instance.new("UIPadding", Lumiere.CC["12"]);
+    Lumiere.CC["13"]["PaddingBottom"] = UDim.new(0, 2);
 
-            UserInputService.InputBegan:Connect(function(input, gpe)
-                if gpe or isListening then return end
-                if currentKey ~= Enum.KeyCode.Unknown and (input.KeyCode == currentKey or input.UserInputType == currentKey) then
-                    toggle()
-                end
-            end)
-        end
+    Lumiere.CC["14"] = Instance.new("UITextSizeConstraint", Lumiere.CC["12"]);
+    Lumiere.CC["14"]["MaxTextSize"] = 14;
 
-        updateVisuals(true)
+    Lumiere.CC["15"] = Instance.new("TextButton", Lumiere.CC["f"]);
+    Lumiere.CC["15"]["BorderSizePixel"] = 0;
+    Lumiere.CC["15"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["15"]["TextSize"] = 14;
+    Lumiere.CC["15"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["15"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["15"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["15"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["15"]["Name"] = [[Trigger]];
+    Lumiere.CC["15"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["15"]["Text"] = [[]];
 
-        -- Limit key text length
-        keyText:GetPropertyChangedSignal("Text"):Connect(function()
-            if #keyText.Text > 3 then
-                keyText.Text = keyText.Text:sub(1, 3)
-            end
-        end)
-    end)
+    Lumiere.CC["16"] = Instance.new("LocalScript", Lumiere.CC["f"]);
+    Lumiere.CC["16"]["Name"] = [[Script]];
 
-    return Toggle
+    local function C_e()
+        local script = Lumiere.CC["e"];
+        local UserInputService = game:GetService("UserInputService")
+        local TweenService = game:GetService("TweenService")
+
+        local function CreateToggle(Container, DefaultState, UseKeybind, DefaultKey, Callback)
+            local ToggleFrame = Container:WaitForChild("Toggle")
+            local Dot = ToggleFrame:WaitForChild("Dot")
+            local Trigger = ToggleFrame:WaitForChild("Trigger")
+            local KeybindFrame = Container:WaitForChild("Keybind")
+            local KeyText = KeybindFrame:WaitForChild("KeyText")
+            local KeyTrigger = KeybindFrame:WaitForChild("Trigger")
+
+            local isOn = DefaultState or false
+            local currentKey = DefaultKey or Enum.KeyCode.Unknown
+            local isListening = false
+            local tInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+            local isPC = UserInputService.KeyboardEnabled and UserInputService.MouseEnabled
+            local keybindEnabled = UseKeybind and isPC
+
+            KeybindFrame.Visible = keybindEnabled
+
+            local function UpdateVisuals(instant)
+                local currentTInfo = instant and TweenInfo.new(0) or tInfo
+                local targetPos = isOn and UDim2.new(0.8, 0, 0.5, 0) or UDim2.new(0.2, 0, 0.5, 0)
+                local targetColor = isOn and Color3.fromRGB(32, 84, 201) or Color3.fromRGB(150, 150, 150)
+
+                TweenService:Create(Dot, currentTInfo, {
+                    Position = targetPos,
+                    BackgroundColor3 = targetColor
+                }):Play()
+            end
+
+            local function Toggle()
+                isOn = not isOn
+                UpdateVisuals(false)
+                if Callback then Callback(isOn) end
+            end
+
+            Trigger.MouseButton1Click:Connect(Toggle)
+
+            if keybindEnabled then
+                KeyText.Text = "?"
+
+                KeyTrigger.MouseButton1Click:Connect(function()
+                    if isListening then return end
+                    isListening = true
+                    KeyText.Text = "..."
+
+                    local connection
+                    connection = UserInputService.InputBegan:Connect(function(input)
+                        local keyPressed = nil
+                        if input.UserInputType == Enum.UserInputType.Keyboard then
+                            keyPressed = (input.KeyCode == Enum.KeyCode.Escape) and Enum.KeyCode.Unknown or input
+                            .KeyCode
+                        elseif input.UserInputType == Enum.UserInputType.MouseButton2 or input.UserInputType == Enum.UserInputType.MouseButton3 then
+                            keyPressed = input.UserInputType
+                        end
+
+                        if keyPressed then
+                            connection:Disconnect()
+                            currentKey = keyPressed
+                            KeyText.Text = (keyPressed == Enum.KeyCode.Unknown) and "NONE" or keyPressed.Name
+                            script.Parent.Keybind:SetAttribute("Key", KeyText.Text)
+                            isListening = false
+                        end
+                    end)
+                end)
+
+                UserInputService.InputBegan:Connect(function(input, gpe)
+                    if gpe or isListening then return end
+                    if currentKey ~= Enum.KeyCode.Unknown then
+                        if input.KeyCode == currentKey or input.UserInputType == currentKey then
+                            Toggle()
+                        end
+                    end
+                end)
+            end
+
+            UpdateVisuals(true)
+        end
+
+        CreateToggle(script.Parent, Toggle.Default, Toggle.UseKeybind, Toggle.DefaultKey, function(state)
+            Toggle.Callback(state)
+        end)
+    end;
+    task.spawn(C_e);
+
+    local function C_16()
+        local script = Lumiere.CC["16"];
+        local keyText = script.Parent.KeyText
+
+        keyText:GetPropertyChangedSignal("Text"):Connect(function()
+            local currentText = keyText.Text
+
+            if #currentText > 3 then
+                keyText.Text = string.sub(currentText, 1, 3)
+            end
+        end)
+    end;
+    task.spawn(C_16);
+
+    return Toggle
 end
 
 function LumiereLibrary:Slider(params)
-    local Slider = {}
-    Slider.Name = params.Name
-    Slider.Parent = params.Parent
-    Slider.Min = params.Min or 0
-    Slider.Max = params.Max or 100
-    Slider.Default = params.Default or 50
-    Slider.Callback = params.Callback or function() end
+    local Slider = {}
 
-    local tabContent = game.CoreGui.Lumiere.CC.Main.Tabs[Slider.Parent]
-    local layout = tabContent.Scroll.Layout
+    Slider.Name = params.Name
+    Slider.Parent = params.Parent
+    Slider.Min = params.Min or 0
+    Slider.Max = params.Max or 100
+    Slider.Default = params.Default or 50
+    Slider.Callback = params.Callback or function() end
 
-    local sliderFrame = Instance.new("Frame", layout)
-    sliderFrame.BorderSizePixel = 0
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    sliderFrame.Size = UDim2.new(0, 405, 0, 49)
-    sliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    sliderFrame.Name = Slider.Name
+    local Lumiere.CC = {}
 
-    local nameLabel = Instance.new("TextLabel", sliderFrame)
-    nameLabel.TextWrapped = true
-    nameLabel.BorderSizePixel = 0
-    nameLabel.TextSize = 15
-    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    nameLabel.TextScaled = true
-    nameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    nameLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    nameLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    nameLabel.BackgroundTransparency = 1
-    nameLabel.AnchorPoint = Vector2.new(0, 0.5)
-    nameLabel.Size = UDim2.new(0.42659, 0, 1, 0)
-    nameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    nameLabel.Text = Slider.Name
-    nameLabel.Name = "ComponentName"
-    nameLabel.Position = UDim2.new(0, 15, 0, 24)
+    Lumiere.CC["2"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Tabs[Slider.Parent].Scroll.Layout);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 405, 0, 49);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.00246, 0, 0, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = Slider.Name;
 
-    local namePadding = Instance.new("UIPadding", nameLabel)
-    namePadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", nameLabel).MaxTextSize = 15
+    Lumiere.CC["3"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["TextWrapped"] = true;
+    Lumiere.CC["3"]["BorderSizePixel"] = 0;
+    Lumiere.CC["3"]["TextSize"] = 15;
+    Lumiere.CC["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["3"]["TextScaled"] = true;
+    Lumiere.CC["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["3"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["3"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
+    Lumiere.CC["3"]["Size"] = UDim2.new(0.42659, 0, 1, 0);
+    Lumiere.CC["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["3"]["Text"] = Slider.Name;
+    Lumiere.CC["3"]["Name"] = [[ComponentName]];
+    Lumiere.CC["3"]["Position"] = UDim2.new(0, 15, 0, 24);
 
-    Instance.new("UIStroke", sliderFrame).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    Instance.new("UIStroke", sliderFrame).Color = Color3.fromRGB(36, 36, 36)
-    Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0.12, 0)
+    Lumiere.CC["4"] = Instance.new("UIPadding", Lumiere.CC["3"]);
+    Lumiere.CC["4"]["PaddingBottom"] = UDim.new(0, 2);
 
-    local sliderBar = Instance.new("Frame", sliderFrame)
-    sliderBar.BorderSizePixel = 0
-    sliderBar.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    sliderBar.AnchorPoint = Vector2.new(0.5, 0.5)
-    sliderBar.Size = UDim2.new(0, 145, 0, 16)
-    sliderBar.Position = UDim2.new(0.78922, 0, 0.51361, 0)
-    sliderBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    sliderBar.Name = "Slider"
+    Lumiere.CC["5"] = Instance.new("UITextSizeConstraint", Lumiere.CC["3"]);
+    Lumiere.CC["5"]["MaxTextSize"] = 15;
 
-    local barStroke = Instance.new("UIStroke", sliderBar)
-    barStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    barStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["6"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["6"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    Instance.new("UICorner", sliderBar).CornerRadius = UDim.new(1, 0)
+    Lumiere.CC["7"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["7"]["CornerRadius"] = UDim.new(0.12, 0);
 
-    local fill = Instance.new("Frame", sliderBar)
-    fill.Name = "Fill"
-    fill.BackgroundColor3 = Color3.fromRGB(125, 125, 125)
-    fill.BorderSizePixel = 0
-    fill.ZIndex = 1
-    local startPercent = math.clamp((Slider.Default - Slider.Min) / (Slider.Max - Slider.Min), 0, 1)
-    fill.Size = UDim2.new(startPercent, 0, 1, 0)
-    Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
+    Lumiere.CC["8"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["8"]["BorderSizePixel"] = 0;
+    Lumiere.CC["8"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["8"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["8"]["Size"] = UDim2.new(0, 145, 0, 16);
+    Lumiere.CC["8"]["Position"] = UDim2.new(0.78922, 0, 0.51361, 0);
+    Lumiere.CC["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["8"]["Name"] = [[Slider]];
 
-    local sliderTrigger = Instance.new("TextButton", sliderBar)
-    sliderTrigger.BorderSizePixel = 0
-    sliderTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    sliderTrigger.TextSize = 14
-    sliderTrigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    sliderTrigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    sliderTrigger.Size = UDim2.new(1, 0, 1, 0)
-    sliderTrigger.BackgroundTransparency = 1
-    sliderTrigger.Name = "Trigger"
-    sliderTrigger.Text = ""
-    sliderTrigger.ZIndex = 5
+    Lumiere.CC["9"] = Instance.new("UIStroke", Lumiere.CC["8"]);
+    Lumiere.CC["9"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["9"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    local valueLabel = Instance.new("TextLabel", sliderFrame)
-    valueLabel.BorderSizePixel = 0
-    valueLabel.TextSize = 15
-    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
-    valueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    valueLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    valueLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    valueLabel.BackgroundTransparency = 1
-    valueLabel.Size = UDim2.new(0.08687, 0, 1, 0)
-    valueLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    valueLabel.Text = tostring(Slider.Default)
-    valueLabel.Name = "Value"
-    valueLabel.Position = UDim2.new(0.50123, 0, 0, 0)
+    Lumiere.CC["a"] = Instance.new("UICorner", Lumiere.CC["8"]);
+    Lumiere.CC["a"]["CornerRadius"] = UDim.new(1, 0);
 
-    local valuePadding = Instance.new("UIPadding", valueLabel)
-    valuePadding.PaddingBottom = UDim.new(0, 2)
+    Lumiere.CC["b"] = Instance.new("TextButton", Lumiere.CC["8"]);
+    Lumiere.CC["b"]["BorderSizePixel"] = 0;
+    Lumiere.CC["b"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["b"]["TextSize"] = 14;
+    Lumiere.CC["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["b"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["b"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["b"]["Name"] = [[Trigger]];
+    Lumiere.CC["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["b"]["Text"] = [[]];
 
-    task.spawn(function()
-        local dragging = false
-        local function toggleScroll(enabled)
-            if layout.Parent and layout.Parent:IsA("ScrollingFrame") then
-                layout.Parent.ScrollingEnabled = enabled
-            end
-        end
+    Lumiere.CC["c"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["c"]["BorderSizePixel"] = 0;
+    Lumiere.CC["c"]["TextSize"] = 15;
+    Lumiere.CC["c"]["TextXAlignment"] = Enum.TextXAlignment.Right;
+    Lumiere.CC["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["c"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["c"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["c"]["Size"] = UDim2.new(0.08687, 0, 1, 0);
+    Lumiere.CC["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["c"]["Text"] = [[0]];
+    Lumiere.CC["c"]["Name"] = [[Value]];
+    Lumiere.CC["c"]["Position"] = UDim2.new(0.50123, 0, 0, 0);
 
-        local function updateSlider(input)
-            local percent = math.clamp((input.Position.X - sliderBar.AbsolutePosition.X) / sliderBar.AbsoluteSize.X, 0, 1)
-            local currentValue = math.floor(Slider.Min + (percent * (Slider.Max - Slider.Min)))
-            valueLabel.Text = tostring(currentValue)
-            TweenService:Create(fill, TweenInfo.new(0.1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Size = UDim2.new(percent, 0, 1, 0) }):Play()
-            Slider.Callback(currentValue)
-        end
+    Lumiere.CC["d"] = Instance.new("UIPadding", Lumiere.CC["c"]);
+    Lumiere.CC["d"]["PaddingBottom"] = UDim.new(0, 2);
 
-        sliderTrigger.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = true
-                toggleScroll(false)
-                updateSlider(input)
-            end
-        end)
+    Lumiere.CC["e"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["e"]["Name"] = [[Script]];
 
-        UserInputService.InputChanged:Connect(function(input)
-            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-                updateSlider(input)
-            end
-        end)
+    local function C_e()
+        local script = Lumiere.CC["e"];
+        local TweenService = game:GetService("TweenService")
+        local UserInputService = game:GetService("UserInputService")
 
-        UserInputService.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = false
-                toggleScroll(true)
-            end
-        end)
-    end)
+        local function CreateSlider(SliderContainer, Min, Max, Default, Callback)
+            local SliderFrame = SliderContainer:WaitForChild("Slider")
+            local Trigger = SliderFrame:WaitForChild("Trigger")
+            local ValueLabel = SliderContainer:WaitForChild("Value")
+            local ScrollFrame = SliderContainer.Parent.Parent
 
-    return Slider
+            local fillColor = Color3.fromRGB(132, 146, 176)
+
+            local Fill = Instance.new("Frame")
+            Fill.Name = "Fill"
+            Fill.BackgroundColor3 = fillColor
+            Fill.BorderSizePixel = 0
+            Fill.ZIndex = 1
+            local startPercent = math.clamp((Default - Min) / (Max - Min), 0, 1)
+            Fill.Size = UDim2.new(startPercent, 0, 1, 0)
+            Fill.Parent = SliderFrame
+
+            local FillCorner = Instance.new("UICorner")
+            FillCorner.CornerRadius = SliderFrame:WaitForChild("UICorner").CornerRadius
+            FillCorner.Parent = Fill
+
+            Trigger.ZIndex = 5
+
+            local dragging = false
+
+            local function ToggleScroll(enabled)
+                if ScrollFrame and ScrollFrame:IsA("ScrollingFrame") then
+                    ScrollFrame.ScrollingEnabled = enabled
+                end
+            end
+
+            local function UpdateSlider(input)
+                local sliderSize = SliderFrame.AbsoluteSize.X
+                local sliderPos = SliderFrame.AbsolutePosition.X
+                local inputPos = input.Position.X
+
+                local percent = math.clamp((inputPos - sliderPos) / sliderSize, 0, 1)
+                local currentValue = math.round(Min + (percent * (Max - Min)))
+
+                ValueLabel.Text = tostring(currentValue)
+
+                local tInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+                TweenService:Create(Fill, tInfo, { Size = UDim2.new(percent, 0, 1, 0) }):Play()
+
+                if Callback then Callback(currentValue) end
+            end
+
+            Trigger.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    dragging = true
+                    ToggleScroll(false)
+                    UpdateSlider(input)
+                end
+            end)
+
+            UserInputService.InputChanged:Connect(function(input)
+                if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                    UpdateSlider(input)
+                end
+            end)
+
+            UserInputService.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    dragging = false
+                    ToggleScroll(true)
+                end
+            end)
+
+            ValueLabel.Text = tostring(Default)
+        end
+
+        CreateSlider(script.Parent, Slider.Min, Slider.Max, Slider.Default, function(val) Slider.Callback(val) end)
+    end;
+    task.spawn(C_e);
+
+    return Slider
 end
 
 function LumiereLibrary:Textbox(params)
-    local Textbox = {}
-    Textbox.Name = params.Name
-    Textbox.Parent = params.Parent
-    Textbox.Placeholder = params.Placeholder
-    Textbox.Callback = params.Callback or function() end
+    local Textbox = {}
 
-    local tabContent = game.CoreGui.Lumiere.CC.Main.Tabs[Textbox.Parent]
-    local layout = tabContent.Scroll.Layout
+    Textbox.Name = params.Name
+    Textbox.Parent = params.Parent
+    Textbox.Placeholder = params.Placeholder
+    Textbox.Callback = params.Callback or function() end
 
-    local textboxFrame = Instance.new("Frame", layout)
-    textboxFrame.BorderSizePixel = 0
-    textboxFrame.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    textboxFrame.Size = UDim2.new(0, 405, 0, 49)
-    textboxFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    textboxFrame.Name = Textbox.Name
+    local Lumiere.CC = {}
 
-    local nameLabel = Instance.new("TextLabel", textboxFrame)
-    nameLabel.TextWrapped = true
-    nameLabel.BorderSizePixel = 0
-    nameLabel.TextSize = 15
-    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    nameLabel.TextScaled = true
-    nameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    nameLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    nameLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    nameLabel.BackgroundTransparency = 1
-    nameLabel.AnchorPoint = Vector2.new(0, 0.5)
-    nameLabel.Size = UDim2.new(0.51156, 0, 1, 0)
-    nameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    nameLabel.Text = Textbox.Name
-    nameLabel.Name = "ComponentName"
-    nameLabel.Position = UDim2.new(0, 15, 0, 24)
+    Lumiere.CC["2"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Tabs[Textbox.Parent].Scroll.Layout);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 405, 0, 49);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.00246, 0, 0, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = Textbox.Name;
 
-    local namePadding = Instance.new("UIPadding", nameLabel)
-    namePadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", nameLabel).MaxTextSize = 15
+    Lumiere.CC["3"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["TextWrapped"] = true;
+    Lumiere.CC["3"]["BorderSizePixel"] = 0;
+    Lumiere.CC["3"]["TextSize"] = 15;
+    Lumiere.CC["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["3"]["TextScaled"] = true;
+    Lumiere.CC["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["3"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["3"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
+    Lumiere.CC["3"]["Size"] = UDim2.new(0.51156, 0, 1, 0);
+    Lumiere.CC["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["3"]["Text"] = Textbox.Name;
+    Lumiere.CC["3"]["Name"] = [[ComponentName]];
+    Lumiere.CC["3"]["Position"] = UDim2.new(0, 15, 0, 24);
 
-    Instance.new("UIStroke", textboxFrame).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    Instance.new("UIStroke", textboxFrame).Color = Color3.fromRGB(36, 36, 36)
-    Instance.new("UICorner", textboxFrame).CornerRadius = UDim.new(0.12, 0)
+    Lumiere.CC["4"] = Instance.new("UIPadding", Lumiere.CC["3"]);
+    Lumiere.CC["4"]["PaddingBottom"] = UDim.new(0, 2);
 
-    local box = Instance.new("TextBox", textboxFrame)
-    box.Name = "Box"
-    box.PlaceholderColor3 = Color3.fromRGB(71, 71, 71)
-    box.BorderSizePixel = 0
-    box.TextWrapped = true
-    box.TextSize = 14
-    box.TextColor3 = Color3.fromRGB(126, 126, 126)
-    box.TextScaled = true
-    box.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    box.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    box.AnchorPoint = Vector2.new(0.5, 0.5)
-    box.ClearTextOnFocus = false
-    box.Size = UDim2.new(0, 142, 0, 25)
-    box.Position = UDim2.new(0.79349, 0, 0.483, 0)
-    box.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    box.Text = ""
+    Lumiere.CC["5"] = Instance.new("UITextSizeConstraint", Lumiere.CC["3"]);
+    Lumiere.CC["5"]["MaxTextSize"] = 15;
 
-    Instance.new("UICorner", box).CornerRadius = UDim.new(0.25, 0)
+    Lumiere.CC["6"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["6"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    local boxStroke = Instance.new("UIStroke", box)
-    boxStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    boxStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["7"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["7"]["CornerRadius"] = UDim.new(0.12, 0);
 
-    Instance.new("UITextSizeConstraint", box).MaxTextSize = 14
+    Lumiere.CC["8"] = Instance.new("TextBox", Lumiere.CC["2"]);
+    Lumiere.CC["8"]["Name"] = [[Box]];
+    Lumiere.CC["8"]["PlaceholderColor3"] = Color3.fromRGB(71, 71, 71);
+    Lumiere.CC["8"]["BorderSizePixel"] = 0;
+    Lumiere.CC["8"]["TextWrapped"] = true;
+    Lumiere.CC["8"]["TextSize"] = 14;
+    Lumiere.CC["8"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["8"]["TextScaled"] = true;
+    Lumiere.CC["8"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["8"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["8"]["ClearTextOnFocus"] = false;
+    Lumiere.CC["8"]["Size"] = UDim2.new(0, 142, 0, 25);
+    Lumiere.CC["8"]["Position"] = UDim2.new(0.79349, 0, 0.483, 0);
+    Lumiere.CC["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["8"]["Text"] = [[]];
 
-    box.PlaceholderText = Textbox.Placeholder or "Placeholder..."
-    box.FocusLost:Connect(function(enterPressed)
-        Textbox.Callback(box.Text)
-    end)
+    Lumiere.CC["9"] = Instance.new("UICorner", Lumiere.CC["8"]);
+    Lumiere.CC["9"]["CornerRadius"] = UDim.new(0.25, 0);
 
-    return Textbox
+    Lumiere.CC["a"] = Instance.new("UIStroke", Lumiere.CC["8"]);
+    Lumiere.CC["a"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["a"]["Color"] = Color3.fromRGB(28, 36, 56);
+
+    Lumiere.CC["b"] = Instance.new("UITextSizeConstraint", Lumiere.CC["8"]);
+    Lumiere.CC["b"]["MaxTextSize"] = 14;
+
+    Lumiere.CC["c"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["c"]["Name"] = [[Script]];
+
+    local function C_c()
+        local script = Lumiere.CC["c"];
+        local TweenService = game:GetService("TweenService")
+
+        local function CreateTextbox(TextboxContainer, Placeholder, Callback)
+            local Box = TextboxContainer:WaitForChild("Box")
+            local InputField = Box
+            local BoxStroke = Box:WaitForChild("UIStroke")
+
+            local tInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+            InputField.PlaceholderText = Placeholder or "Placeholder..."
+            InputField.Text = ""
+            InputField.ClipsDescendants = true
+
+            InputField.FocusLost:Connect(function(enterPressed)
+                if Callback then
+                    Callback(InputField.Text)
+                end
+            end)
+        end
+
+        CreateTextbox(script.Parent, Textbox.Placeholder, function(text)
+            Textbox.Callback(text)
+        end)
+    end;
+    task.spawn(C_c);
+
+    return Textbox
 end
 
 function LumiereLibrary:Keybind(params)
-    local Keybind = {}
-    Keybind.Name = params.Name
-    Keybind.Parent = params.Parent
-    Keybind.DefaultKey = params.DefaultKey or Enum.KeyCode.F
-    Keybind.Callback = params.Callback or function() end
+    local Keybind = {}
 
-    local tabContent = game.CoreGui.Lumiere.CC.Main.Tabs[Keybind.Parent]
-    local layout = tabContent.Scroll.Layout
+    Keybind.Name = params.Name
+    Keybind.Parent = params.Parent
+    Keybind.DefaultKey = params.DefaultKey or Enum.KeyCode.F
+    Keybind.Callback = params.Callback or function() end
 
-    local keybindFrame = Instance.new("Frame", layout)
-    keybindFrame.BorderSizePixel = 0
-    keybindFrame.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    keybindFrame.Size = UDim2.new(0, 405, 0, 49)
-    keybindFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    keybindFrame.Name = Keybind.Name
+    local Lumiere.CC = {}
 
-    local nameLabel = Instance.new("TextLabel", keybindFrame)
-    nameLabel.TextWrapped = true
-    nameLabel.BorderSizePixel = 0
-    nameLabel.TextSize = 15
-    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    nameLabel.TextScaled = true
-    nameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    nameLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    nameLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    nameLabel.BackgroundTransparency = 1
-    nameLabel.AnchorPoint = Vector2.new(0, 0.5)
-    nameLabel.Size = UDim2.new(0.74366, 0, 1, 0)
-    nameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    nameLabel.Text = Keybind.Name
-    nameLabel.Name = "ComponentName"
-    nameLabel.Position = UDim2.new(0, 15, 0, 24)
+    Lumiere.CC["2"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Tabs[Keybind.Parent].Scroll.Layout);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 405, 0, 49);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.00246, 0, 0, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = Keybind.Name;
 
-    local namePadding = Instance.new("UIPadding", nameLabel)
-    namePadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", nameLabel).MaxTextSize = 15
+    Lumiere.CC["3"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["TextWrapped"] = true;
+    Lumiere.CC["3"]["BorderSizePixel"] = 0;
+    Lumiere.CC["3"]["TextSize"] = 15;
+    Lumiere.CC["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["3"]["TextScaled"] = true;
+    Lumiere.CC["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["3"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["3"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
+    Lumiere.CC["3"]["Size"] = UDim2.new(0.74366, 0, 1, 0);
+    Lumiere.CC["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["3"]["Text"] = Keybind.Name;
+    Lumiere.CC["3"]["Name"] = [[ComponentName]];
+    Lumiere.CC["3"]["Position"] = UDim2.new(0, 15, 0, 24);
 
-    Instance.new("UIStroke", keybindFrame).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    Instance.new("UIStroke", keybindFrame).Color = Color3.fromRGB(36, 36, 36)
-    Instance.new("UICorner", keybindFrame).CornerRadius = UDim.new(0.12, 0)
+    Lumiere.CC["4"] = Instance.new("UIPadding", Lumiere.CC["3"]);
+    Lumiere.CC["4"]["PaddingBottom"] = UDim.new(0, 2);
 
-    local keybindBox = Instance.new("Frame", keybindFrame)
-    keybindBox.BorderSizePixel = 0
-    keybindBox.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    keybindBox.AnchorPoint = Vector2.new(0.5, 0.5)
-    keybindBox.Size = UDim2.new(0, 30, 0, 30)
-    keybindBox.Position = UDim2.new(0.93087, 0, 0.483, 0)
-    keybindBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    keybindBox.Name = "Keybind"
-    keybindBox:SetAttribute("Key", "nil")
+    Lumiere.CC["5"] = Instance.new("UITextSizeConstraint", Lumiere.CC["3"]);
+    Lumiere.CC["5"]["MaxTextSize"] = 15;
 
-    local boxStroke = Instance.new("UIStroke", keybindBox)
-    boxStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    boxStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["6"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["6"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    Instance.new("UICorner", keybindBox).CornerRadius = UDim.new(0.25, 0)
+    Lumiere.CC["7"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["7"]["CornerRadius"] = UDim.new(0.12, 0);
 
-    local keyText = Instance.new("TextLabel", keybindBox)
-    keyText.TextWrapped = true
-    keyText.BorderSizePixel = 0
-    keyText.TextSize = 14
-    keyText.TextScaled = true
-    keyText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    keyText.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    keyText.TextColor3 = Color3.fromRGB(126, 126, 126)
-    keyText.BackgroundTransparency = 1
-    keyText.AnchorPoint = Vector2.new(0.5, 0.5)
-    keyText.Size = UDim2.new(1, 0, 1, 0)
-    keyText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    keyText.Text = "F"
-    keyText.Name = "KeyText"
-    keyText.Position = UDim2.new(0.5, 0, 0.5, 0)
+    Lumiere.CC["8"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["8"]["BorderSizePixel"] = 0;
+    Lumiere.CC["8"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["8"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["8"]["Size"] = UDim2.new(0, 30, 0, 30);
+    Lumiere.CC["8"]["Position"] = UDim2.new(0.93087, 0, 0.483, 0);
+    Lumiere.CC["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["8"]["Name"] = [[Keybind]];
 
-    local keyPadding = Instance.new("UIPadding", keyText)
-    keyPadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", keyText).MaxTextSize = 14
+    Lumiere.CC["8"]:SetAttribute([[Key]], [[nil]]);
 
-    local trigger = Instance.new("TextButton", keybindBox)
-    trigger.BorderSizePixel = 0
-    trigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    trigger.TextSize = 14
-    trigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    trigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    trigger.Size = UDim2.new(1, 0, 1, 0)
-    trigger.BackgroundTransparency = 1
-    trigger.Name = "Trigger"
-    trigger.Text = ""
+    Lumiere.CC["9"] = Instance.new("UIStroke", Lumiere.CC["8"]);
+    Lumiere.CC["9"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["9"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    task.spawn(function()
-        local currentKey = Keybind.DefaultKey
-        local isListening = false
-        keyText.Text = currentKey.Name
+    Lumiere.CC["a"] = Instance.new("UICorner", Lumiere.CC["8"]);
+    Lumiere.CC["a"]["CornerRadius"] = UDim.new(0.25, 0);
 
-        trigger.MouseButton1Click:Connect(function()
-            if isListening then return end
-            isListening = true
-            keyText.Text = "..."
-            local conn
-            conn = UserInputService.InputBegan:Connect(function(input)
-                local keyPressed = nil
-                if input.UserInputType == Enum.UserInputType.Keyboard then
-                    keyPressed = (input.KeyCode == Enum.KeyCode.Escape) and Enum.KeyCode.Unknown or input.KeyCode
-                elseif input.UserInputType == Enum.UserInputType.MouseButton2 or input.UserInputType == Enum.UserInputType.MouseButton3 then
-                    keyPressed = input.UserInputType
-                end
-                if keyPressed then
-                    conn:Disconnect()
-                    currentKey = keyPressed
-                    keyText.Text = (keyPressed == Enum.KeyCode.Unknown) and "NONE" or keyPressed.Name
-                    keybindBox:SetAttribute("Key", keyText.Text)
-                    isListening = false
-                end
-            end)
-        end)
+    Lumiere.CC["b"] = Instance.new("TextLabel", Lumiere.CC["8"]);
+    Lumiere.CC["b"]["TextWrapped"] = true;
+    Lumiere.CC["b"]["BorderSizePixel"] = 0;
+    Lumiere.CC["b"]["TextSize"] = 14;
+    Lumiere.CC["b"]["TextScaled"] = true;
+    Lumiere.CC["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["b"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["b"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["b"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["b"]["Text"] = [[F]];
+    Lumiere.CC["b"]["Name"] = [[KeyText]];
+    Lumiere.CC["b"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
-        UserInputService.InputBegan:Connect(function(input, gpe)
-            if gpe or isListening then return end
-            if currentKey ~= Enum.KeyCode.Unknown and (input.KeyCode == currentKey or input.UserInputType == currentKey) then
-                Keybind.Callback()
-            end
-        end)
+    Lumiere.CC["c"] = Instance.new("UIPadding", Lumiere.CC["b"]);
+    Lumiere.CC["c"]["PaddingBottom"] = UDim.new(0, 2);
 
-        keyText:GetPropertyChangedSignal("Text"):Connect(function()
-            if #keyText.Text > 3 then
-                keyText.Text = keyText.Text:sub(1, 3)
-            end
-        end)
-    end)
+    Lumiere.CC["d"] = Instance.new("UITextSizeConstraint", Lumiere.CC["b"]);
+    Lumiere.CC["d"]["MaxTextSize"] = 14;
 
-    return Keybind
+    Lumiere.CC["e"] = Instance.new("TextButton", Lumiere.CC["8"]);
+    Lumiere.CC["e"]["BorderSizePixel"] = 0;
+    Lumiere.CC["e"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["e"]["TextSize"] = 14;
+    Lumiere.CC["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["e"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["e"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["e"]["Name"] = [[Trigger]];
+    Lumiere.CC["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["e"]["Text"] = [[]];
+
+    Lumiere.CC["f"] = Instance.new("LocalScript", Lumiere.CC["8"]);
+    Lumiere.CC["f"]["Name"] = [[Script]];
+
+    Lumiere.CC["10"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["10"]["Name"] = [[Script]];
+
+    local function C_f()
+        local script = Lumiere.CC["f"];
+        local keyText = script.Parent.KeyText
+
+        keyText:GetPropertyChangedSignal("Text"):Connect(function()
+            local currentText = keyText.Text
+
+            if #currentText > 3 then
+                keyText.Text = string.sub(currentText, 1, 3)
+            end
+        end)
+    end;
+    task.spawn(C_f);
+
+    local function C_10()
+        local script = Lumiere.CC["10"];
+        local UserInputService = game:GetService("UserInputService")
+        local TweenService = game:GetService("TweenService")
+
+        local function CreateKeybind(KeybindContainer, DefaultKey, Callback)
+            local KeybindFrame = KeybindContainer:WaitForChild("Keybind")
+            local Trigger = KeybindFrame:WaitForChild("Trigger")
+            local KeyText = KeybindFrame:WaitForChild("KeyText")
+
+            local currentKey = DefaultKey or Enum.KeyCode.F
+            local isListening = false
+
+            KeyText.Text = currentKey.Name
+            script.Parent.Keybind:SetAttribute("Key", KeyText.Text)
+
+            Trigger.MouseButton1Click:Connect(function()
+                if isListening then return end
+
+                isListening = true
+                KeyText.Text = "..."
+
+                local connection
+                connection = UserInputService.InputBegan:Connect(function(input)
+                    local keyPressed = nil
+
+                    if input.UserInputType == Enum.UserInputType.Keyboard then
+                        if input.KeyCode == Enum.KeyCode.Escape then
+                            keyPressed = Enum.KeyCode.Unknown
+                        else
+                            keyPressed = input.KeyCode
+                        end
+                    elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
+                        keyPressed = Enum.UserInputType.MouseButton2
+                    elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
+                        keyPressed = Enum.UserInputType.MouseButton3
+                    end
+
+                    if keyPressed then
+                        connection:Disconnect()
+                        currentKey = keyPressed
+                        KeyText.Text = (keyPressed == Enum.KeyCode.Unknown) and "NONE" or keyPressed.Name
+                        script.Parent.Keybind:SetAttribute("Key", KeyText.Text)
+                        isListening = false
+                    end
+                end)
+            end)
+
+            UserInputService.InputBegan:Connect(function(input, gpe)
+                if gpe then return end
+                if isListening then return end
+
+                if currentKey ~= Enum.KeyCode.Unknown then
+                    if input.KeyCode == currentKey or input.UserInputType == currentKey then
+                        if Callback then
+                            Callback()
+                        end
+                    end
+                end
+            end)
+        end
+
+        CreateKeybind(script.Parent, Keybind.DefaultKey, function()
+            Keybind.Callback()
+        end)
+    end;
+    task.spawn(C_10);
+
+    return Keybind
 end
 
 function LumiereLibrary:Dropdown(params)
-    local Dropdown = {}
-    Dropdown.Name = params.Name
-    Dropdown.Parent = params.Parent
-    Dropdown.Options = params.Options or {}
-    Dropdown.Default = params.Default or (Dropdown.Options[1] or "None")
-    Dropdown.Callback = params.Callback or function() end
+    local Dropdown = {}
 
-    local tabContent = game.CoreGui.Lumiere.CC.Main.Tabs[Dropdown.Parent]
-    local layout = tabContent.Scroll.Layout
+    Dropdown.Name = params.Name
+    Dropdown.Parent = params.Parent
+    Dropdown.Options = params.Options or {}
+    Dropdown.Default = params.Default or (Dropdown.Options[1] or "None")
+    Dropdown.Callback = params.Callback or function() end
 
-    local dropdownFrame = Instance.new("Frame", layout)
-    dropdownFrame.BorderSizePixel = 0
-    dropdownFrame.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    dropdownFrame.Size = UDim2.new(0, 405, 0, 49)
-    dropdownFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    dropdownFrame.Name = Dropdown.Name
+    local Lumiere.CC = {}
 
-    local nameLabel = Instance.new("TextLabel", dropdownFrame)
-    nameLabel.TextWrapped = true
-    nameLabel.BorderSizePixel = 0
-    nameLabel.TextSize = 15
-    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    nameLabel.TextScaled = true
-    nameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    nameLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    nameLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    nameLabel.BackgroundTransparency = 1
-    nameLabel.AnchorPoint = Vector2.new(0, 0.5)
-    nameLabel.Size = UDim2.new(0.55847, 0, 1, 0)
-    nameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    nameLabel.Text = Dropdown.Name
-    nameLabel.Name = "ComponentName"
-    nameLabel.Position = UDim2.new(0, 15, 0, 24)
+    Lumiere.CC["2"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Tabs[Dropdown.Parent].Scroll.Layout);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 405, 0, 49);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.00246, 0, 0, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = Dropdown.Name;
 
-    local namePadding = Instance.new("UIPadding", nameLabel)
-    namePadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", nameLabel).MaxTextSize = 15
+    Lumiere.CC["3"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["TextWrapped"] = true;
+    Lumiere.CC["3"]["BorderSizePixel"] = 0;
+    Lumiere.CC["3"]["TextSize"] = 15;
+    Lumiere.CC["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["3"]["TextScaled"] = true;
+    Lumiere.CC["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["3"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["3"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
+    Lumiere.CC["3"]["Size"] = UDim2.new(0.55847, 0, 1, 0);
+    Lumiere.CC["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["3"]["Text"] = Dropdown.Name;
+    Lumiere.CC["3"]["Name"] = [[ComponentName]];
+    Lumiere.CC["3"]["Position"] = UDim2.new(0, 15, 0, 24);
 
-    Instance.new("UIStroke", dropdownFrame).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    Instance.new("UIStroke", dropdownFrame).Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["4"] = Instance.new("UIPadding", Lumiere.CC["3"]);
+    Lumiere.CC["4"]["PaddingBottom"] = UDim.new(0, 2);
 
-    local mainCorner = Instance.new("UICorner", dropdownFrame)
-    mainCorner.CornerRadius = UDim.new(0.12, 0)
+    Lumiere.CC["5"] = Instance.new("UITextSizeConstraint", Lumiere.CC["3"]);
+    Lumiere.CC["5"]["MaxTextSize"] = 15;
 
-    local dropdownBox = Instance.new("Frame", dropdownFrame)
-    dropdownBox.BorderSizePixel = 0
-    dropdownBox.BackgroundColor3 = Color3.fromRGB(11, 11, 11)
-    dropdownBox.AnchorPoint = Vector2.new(0.5, 0.5)
-    dropdownBox.Size = UDim2.new(0, 119, 0, 30)
-    dropdownBox.Position = UDim2.new(0.82099, 0, 0.483, 0)
-    dropdownBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    dropdownBox.Name = "Dropdown"
+    Lumiere.CC["6"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["6"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    Instance.new("UICorner", dropdownBox).CornerRadius = UDim.new(0.25, 0)
+    Lumiere.CC["7"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["7"]["CornerRadius"] = UDim.new(0.12, 0);
 
-    local boxStroke = Instance.new("UIStroke", dropdownBox)
-    boxStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    boxStroke.Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["8"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["8"]["BorderSizePixel"] = 0;
+    Lumiere.CC["8"]["BackgroundColor3"] = Color3.fromRGB(6, 8, 12);
+    Lumiere.CC["8"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["8"]["Size"] = UDim2.new(0, 119, 0, 30);
+    Lumiere.CC["8"]["Position"] = UDim2.new(0.82099, 0, 0.483, 0);
+    Lumiere.CC["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["8"]["Name"] = [[Dropdown]];
 
-    local chevron = Instance.new("ImageLabel", dropdownBox)
-    chevron.BorderSizePixel = 0
-    chevron.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    chevron.ImageColor3 = Color3.fromRGB(126, 126, 126)
-    chevron.AnchorPoint = Vector2.new(0.5, 0.5)
-    chevron.Image = "rbxassetid://10709790948"
-    chevron.Size = UDim2.new(0, 25, 0, 25)
-    chevron.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    chevron.BackgroundTransparency = 1
-    chevron.Name = "Chevron"
-    chevron.Position = UDim2.new(0.86, 0, 0.5, 0)
-    Instance.new("UIAspectRatioConstraint", chevron)
+    Lumiere.CC["9"] = Instance.new("UICorner", Lumiere.CC["8"]);
+    Lumiere.CC["9"]["CornerRadius"] = UDim.new(0.25, 0);
 
-    local chevTrigger = Instance.new("TextButton", chevron)
-    chevTrigger.BorderSizePixel = 0
-    chevTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    chevTrigger.TextSize = 14
-    chevTrigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    chevTrigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    chevTrigger.Size = UDim2.new(1, 0, 1, 0)
-    chevTrigger.BackgroundTransparency = 1
-    chevTrigger.Name = "Trigger"
-    chevTrigger.Text = ""
+    Lumiere.CC["a"] = Instance.new("UIStroke", Lumiere.CC["8"]);
+    Lumiere.CC["a"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["a"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    local selectedText = Instance.new("TextLabel", dropdownBox)
-    selectedText.TextWrapped = true
-    selectedText.BorderSizePixel = 0
-    selectedText.TextSize = 13
-    selectedText.TextXAlignment = Enum.TextXAlignment.Left
-    selectedText.TextScaled = true
-    selectedText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    selectedText.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    selectedText.TextColor3 = Color3.fromRGB(126, 126, 126)
-    selectedText.BackgroundTransparency = 1
-    selectedText.Size = UDim2.new(0.67625, 0, 1, 0)
-    selectedText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    selectedText.Text = Dropdown.Default
-    selectedText.Name = "Selected"
-    selectedText.Position = UDim2.new(0.041, 0, 0, 0)
+    Lumiere.CC["b"] = Instance.new("ImageLabel", Lumiere.CC["8"]);
+    Lumiere.CC["b"]["BorderSizePixel"] = 0;
+    Lumiere.CC["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["b"]["ImageColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["b"]["Image"] = [[rbxassetid://10709790948]];
+    Lumiere.CC["b"]["Size"] = UDim2.new(0, 25, 0, 25);
+    Lumiere.CC["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["b"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["b"]["Name"] = [[Chevron]];
+    Lumiere.CC["b"]["Position"] = UDim2.new(0.86, 0, 0.5, 0);
 
-    local selectedPadding = Instance.new("UIPadding", selectedText)
-    selectedPadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", selectedText).MaxTextSize = 13
+    Lumiere.CC["c"] = Instance.new("UIAspectRatioConstraint", Lumiere.CC["b"]);
 
-    local optionHeight = 28
-    local dropdownYSize = #Dropdown.Options * optionHeight
+    Lumiere.CC["d"] = Instance.new("TextButton", Lumiere.CC["b"]);
+    Lumiere.CC["d"]["BorderSizePixel"] = 0;
+    Lumiere.CC["d"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["d"]["TextSize"] = 14;
+    Lumiere.CC["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["d"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["d"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["d"]["Name"] = [[Trigger]];
+    Lumiere.CC["d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["d"]["Text"] = [[]];
 
-    local originalSize = UDim2.new(1, 0, 0, 49)
-    local expandedSize = UDim2.new(1, 0, 0, 49 + dropdownYSize + 10)
-    local originalCorner = mainCorner.CornerRadius
-    local expandedCorner = UDim.new(0, 5)
+    Lumiere.CC["e"] = Instance.new("TextLabel", Lumiere.CC["8"]);
+    Lumiere.CC["e"]["TextWrapped"] = true;
+    Lumiere.CC["e"]["BorderSizePixel"] = 0;
+    Lumiere.CC["e"]["TextSize"] = 13;
+    Lumiere.CC["e"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["e"]["TextScaled"] = true;
+    Lumiere.CC["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["e"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["e"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["e"]["Size"] = UDim2.new(0.67625, 0, 1, 0);
+    Lumiere.CC["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["e"]["Text"] = Dropdown.Default;
+    Lumiere.CC["e"]["Name"] = [[Selected]];
+    Lumiere.CC["e"]["Position"] = UDim2.new(0.041, 0, 0, 0);
 
-    local listFrame = Instance.new("Frame", dropdownBox)
-    listFrame.Name = "OptionList"
-    listFrame.Size = UDim2.new(1, 0, 0, 0)
-    listFrame.Position = UDim2.new(0, 0, 1, 6)
-    listFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-    listFrame.ClipsDescendants = true
-    listFrame.ZIndex = 10
-    listFrame.Visible = false
+    Lumiere.CC["f"] = Instance.new("UIPadding", Lumiere.CC["e"]);
+    Lumiere.CC["f"]["PaddingBottom"] = UDim.new(0, 2);
 
-    Instance.new("UICorner", listFrame).CornerRadius = UDim.new(0, 4)
+    Lumiere.CC["10"] = Instance.new("UITextSizeConstraint", Lumiere.CC["e"]);
+    Lumiere.CC["10"]["MaxTextSize"] = 13;
 
-    local listStroke = Instance.new("UIStroke", listFrame)
-    listStroke.Color = Color3.fromRGB(35, 35, 35)
-    listStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    Lumiere.CC["11"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["11"]["Name"] = [[Script]];
 
-    local listLayout = Instance.new("UIListLayout", listFrame)
-    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    local function C_11()
+        local script = Lumiere.CC["11"];
+        local TweenService = game:GetService("TweenService")
 
-    local isOpen = false
+        local function CreateOptions(DropdownContainer, Options, Callback)
+            local DropdownFrame = DropdownContainer:WaitForChild("Dropdown")
+            local Chevron = DropdownFrame:WaitForChild("Chevron")
+            local Trigger = Chevron:WaitForChild("Trigger")
+            local SelectedText = DropdownFrame:WaitForChild("Selected")
+            local ComponentName = DropdownContainer:WaitForChild("ComponentName")
+            local MainCorner = DropdownContainer:WaitForChild("UICorner")
 
-    for _, option in ipairs(Dropdown.Options) do
-        local optionBtn = Instance.new("TextButton", listFrame)
-        optionBtn.Name = option
-        optionBtn.Size = UDim2.new(1, 0, 0, optionHeight)
-        optionBtn.BackgroundTransparency = 1
-        optionBtn.Text = "  " .. option
-        optionBtn.TextXAlignment = Enum.TextXAlignment.Left
-        optionBtn.TextColor3 = Color3.fromRGB(125, 125, 125)
-        optionBtn.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-        optionBtn.TextSize = 13
-        optionBtn.ZIndex = 11
+            ComponentName.AnchorPoint = Vector2.new(0, 0.5)
+            ComponentName.Position = UDim2.new(0, 15, 0, 24)
 
-        optionBtn.MouseEnter:Connect(function()
-            TweenService:Create(optionBtn, TweenInfo.new(0.15), { TextColor3 = Color3.fromRGB(175, 175, 175) }):Play()
-        end)
-        optionBtn.MouseLeave:Connect(function()
-            TweenService:Create(optionBtn, TweenInfo.new(0.15), { TextColor3 = Color3.fromRGB(125, 125, 125) }):Play()
-        end)
-        optionBtn.MouseButton1Click:Connect(function()
-            selectedText.Text = option
-            Dropdown.Callback(option)
+            DropdownFrame.AnchorPoint = Vector2.new(1, 0.5)
+            DropdownFrame.Position = UDim2.new(1, -12, 0, 24)
 
-            isOpen = false
-            TweenService:Create(listFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-            TweenService:Create(dropdownFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart), { Size = originalSize }):Play()
-            TweenService:Create(mainCorner, TweenInfo.new(0.2), { CornerRadius = originalCorner }):Play()
-            TweenService:Create(chevron, TweenInfo.new(0.2), { Rotation = 0 }):Play()
-            task.wait(0.2)
-            listFrame.Visible = false
-        end)
-    end
+            local isOpen = false
+            local OptionHeight = 28
+            local DropdownYSize = #Options * OptionHeight
 
-    chevTrigger.MouseButton1Click:Connect(function()
-        isOpen = not isOpen
-        if isOpen then
-            listFrame.Visible = true
-            TweenService:Create(dropdownFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quart), { Size = expandedSize }):Play()
-            TweenService:Create(mainCorner, TweenInfo.new(0.25), { CornerRadius = expandedCorner }):Play()
-            TweenService:Create(listFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quart), { Size = UDim2.new(1, 0, 0, dropdownYSize) }):Play()
-            TweenService:Create(chevron, TweenInfo.new(0.2), { Rotation = 180 }):Play()
-        else
-            TweenService:Create(listFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-            TweenService:Create(dropdownFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart), { Size = originalSize }):Play()
-            TweenService:Create(mainCorner, TweenInfo.new(0.2), { CornerRadius = originalCorner }):Play()
-            TweenService:Create(chevron, TweenInfo.new(0.2), { Rotation = 0 }):Play()
-            task.wait(0.2)
-            listFrame.Visible = false
-        end
-    end)
+            local originalSize = UDim2.new(1, 0, 0, 49)
+            local expandedSize = UDim2.new(1, 0, 0, 49 + DropdownYSize + 10)
 
-    return Dropdown
+            local originalCorner = script.Parent.UICorner.CornerRadius
+            local expandedCorner = UDim.new(0, 5)
+
+            local ListFrame = Instance.new("Frame")
+            ListFrame.Name = "OptionList"
+            ListFrame.Size = UDim2.new(1, 0, 0, 0)
+            ListFrame.Position = UDim2.new(0, 0, 1, 6)
+            ListFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+            ListFrame.ClipsDescendants = true
+            ListFrame.ZIndex = 10
+            ListFrame.Visible = false
+            ListFrame.Parent = DropdownFrame
+
+            local ListCorner = Instance.new("UICorner")
+            ListCorner.CornerRadius = UDim.new(0, 4)
+            ListCorner.Parent = ListFrame
+
+            local ListStroke = Instance.new("UIStroke")
+            ListStroke.Color = Color3.fromRGB(35, 35, 35)
+            ListStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            ListStroke.Parent = ListFrame
+
+            local ListLayout = Instance.new("UIListLayout")
+            ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            ListLayout.Parent = ListFrame
+
+            for _, option in ipairs(Options) do
+                local OptionBtn = Instance.new("TextButton")
+                OptionBtn.Name = option
+                OptionBtn.Size = UDim2.new(1, 0, 0, OptionHeight)
+                OptionBtn.BackgroundTransparency = 1
+                OptionBtn.Text = "  " .. option
+                OptionBtn.TextXAlignment = Enum.TextXAlignment.Left
+                OptionBtn.TextColor3 = Color3.fromRGB(132, 146, 176)
+                OptionBtn.FontFace = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+                    Enum.FontStyle.Normal)
+                OptionBtn.TextSize = 13
+                OptionBtn.ZIndex = 11
+                OptionBtn.Parent = ListFrame
+
+                OptionBtn.MouseEnter:Connect(function()
+                    TweenService:Create(OptionBtn, TweenInfo.new(0.15), { TextColor3 = Color3.fromRGB(175, 175, 175) })
+                        :Play()
+                end)
+
+                OptionBtn.MouseLeave:Connect(function()
+                    TweenService:Create(OptionBtn, TweenInfo.new(0.15), { TextColor3 = Color3.fromRGB(132, 146, 176) })
+                        :Play()
+                end)
+
+                OptionBtn.MouseButton1Click:Connect(function()
+                    SelectedText.Text = option
+                    if Callback then Callback(option) end
+
+                    isOpen = false
+                    TweenService:Create(ListFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart),
+                        { Size = UDim2.new(1, 0, 0, 0) }):Play()
+                    TweenService:Create(DropdownContainer, TweenInfo.new(0.2, Enum.EasingStyle.Quart),
+                        { Size = originalSize }):Play()
+                    TweenService:Create(MainCorner, TweenInfo.new(0.2), { CornerRadius = originalCorner }):Play()
+                    TweenService:Create(Chevron, TweenInfo.new(0.2), { Rotation = 0 }):Play()
+                    task.wait(0.2)
+                    ListFrame.Visible = false
+                end)
+            end
+
+            Trigger.MouseButton1Click:Connect(function()
+                isOpen = not isOpen
+                if isOpen then
+                    ListFrame.Visible = true
+                    TweenService:Create(DropdownContainer, TweenInfo.new(0.25, Enum.EasingStyle.Quart),
+                        { Size = expandedSize }):Play()
+                    TweenService:Create(MainCorner, TweenInfo.new(0.25), { CornerRadius = expandedCorner }):Play()
+
+                    TweenService:Create(ListFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quart),
+                        { Size = UDim2.new(1, 0, 0, DropdownYSize) }):Play()
+                    TweenService:Create(Chevron, TweenInfo.new(0.2), { Rotation = 180 }):Play()
+                else
+                    TweenService:Create(ListFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart),
+                        { Size = UDim2.new(1, 0, 0, 0) }):Play()
+                    TweenService:Create(DropdownContainer, TweenInfo.new(0.2, Enum.EasingStyle.Quart),
+                        { Size = originalSize }):Play()
+                    TweenService:Create(MainCorner, TweenInfo.new(0.2), { CornerRadius = originalCorner }):Play()
+                    TweenService:Create(Chevron, TweenInfo.new(0.2), { Rotation = 0 }):Play()
+                    task.wait(0.2)
+                    ListFrame.Visible = false
+                end
+            end)
+        end
+
+        CreateOptions(script.Parent, Dropdown.Options, function(val)
+            Dropdown.Callback(val)
+        end)
+    end;
+    task.spawn(C_11);
+
+    return Dropdown
 end
 
 function LumiereLibrary:Colorpicker(params)
-    local Colorpicker = {}
-    Colorpicker.Name = params.Name
-    Colorpicker.Parent = params.Parent
-    Colorpicker.Default = params.Default or Color3.fromRGB(114, 83, 255)
-    Colorpicker.Callback = params.Callback or function() end
+    local Colorpicker = {}
 
-    local tabContent = game.CoreGui.Lumiere.CC.Main.Tabs[Colorpicker.Parent]
-    local layout = tabContent.Scroll.Layout
+    Colorpicker.Name = params.Name
+    Colorpicker.Parent = params.Parent
+    Colorpicker.Default = params.Default or Color3.fromRGB(32, 84, 201)
+    Colorpicker.Callback = params.Callback or function() end
 
-    local cpFrame = Instance.new("Frame", layout)
-    cpFrame.BorderSizePixel = 0
-    cpFrame.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-    cpFrame.Size = UDim2.new(0, 405, 0, 49)
-    cpFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    cpFrame.Name = Colorpicker.Name
+    local Lumiere.CC = {}
 
-    local nameLabel = Instance.new("TextLabel", cpFrame)
-    nameLabel.TextWrapped = true
-    nameLabel.BorderSizePixel = 0
-    nameLabel.TextSize = 15
-    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    nameLabel.TextScaled = true
-    nameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    nameLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    nameLabel.TextColor3 = Color3.fromRGB(126, 126, 126)
-    nameLabel.BackgroundTransparency = 1
-    nameLabel.AnchorPoint = Vector2.new(0, 0.5)
-    nameLabel.Size = UDim2.new(0.74366, 0, 1, 0)
-    nameLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    nameLabel.Text = Colorpicker.Name
-    nameLabel.Name = "ComponentName"
-    nameLabel.Position = UDim2.new(0, 15, 0, 24)
+    Lumiere.CC["2"] = Instance.new("Frame", game.CoreGui["Lumiere.CC"].Main.Tabs[Colorpicker.Parent].Scroll.Layout);
+    Lumiere.CC["2"]["BorderSizePixel"] = 0;
+    Lumiere.CC["2"]["BackgroundColor3"] = Color3.fromRGB(10, 13, 20);
+    Lumiere.CC["2"]["Size"] = UDim2.new(0, 405, 0, 49);
+    Lumiere.CC["2"]["Position"] = UDim2.new(0.00246, 0, 0, 0);
+    Lumiere.CC["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["2"]["Name"] = Colorpicker.Name;
 
-    local namePadding = Instance.new("UIPadding", nameLabel)
-    namePadding.PaddingBottom = UDim.new(0, 2)
-    Instance.new("UITextSizeConstraint", nameLabel).MaxTextSize = 15
+    Lumiere.CC["3"] = Instance.new("TextLabel", Lumiere.CC["2"]);
+    Lumiere.CC["3"]["TextWrapped"] = true;
+    Lumiere.CC["3"]["BorderSizePixel"] = 0;
+    Lumiere.CC["3"]["TextSize"] = 15;
+    Lumiere.CC["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+    Lumiere.CC["3"]["TextScaled"] = true;
+    Lumiere.CC["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["3"]["TextColor3"] = Color3.fromRGB(132, 146, 176);
+    Lumiere.CC["3"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
+    Lumiere.CC["3"]["Size"] = UDim2.new(0.74366, 0, 1, 0);
+    Lumiere.CC["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["3"]["Text"] = Colorpicker.Name;
+    Lumiere.CC["3"]["Name"] = [[ComponentName]];
+    Lumiere.CC["3"]["Position"] = UDim2.new(0, 15, 0, 24);
 
-    Instance.new("UIStroke", cpFrame).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    Instance.new("UIStroke", cpFrame).Color = Color3.fromRGB(36, 36, 36)
+    Lumiere.CC["4"] = Instance.new("UIPadding", Lumiere.CC["3"]);
+    Lumiere.CC["4"]["PaddingBottom"] = UDim.new(0, 2);
 
-    local mainCorner = Instance.new("UICorner", cpFrame)
-    mainCorner.CornerRadius = UDim.new(0.12, 0)
+    Lumiere.CC["5"] = Instance.new("UITextSizeConstraint", Lumiere.CC["3"]);
+    Lumiere.CC["5"]["MaxTextSize"] = 15;
 
-    local colorPreview = Instance.new("Frame", cpFrame)
-    colorPreview.BorderSizePixel = 0
-    colorPreview.BackgroundColor3 = Colorpicker.Default
-    colorPreview.AnchorPoint = Vector2.new(0.5, 0.5)
-    colorPreview.Size = UDim2.new(0, 30, 0, 30)
-    colorPreview.Position = UDim2.new(0.93087, 0, 0.483, 0)
-    colorPreview.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    colorPreview.Name = "Color"
+    Lumiere.CC["6"] = Instance.new("UIStroke", Lumiere.CC["2"]);
+    Lumiere.CC["6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+    Lumiere.CC["6"]["Color"] = Color3.fromRGB(28, 36, 56);
 
-    Instance.new("UICorner", colorPreview).CornerRadius = UDim.new(0.25, 0)
+    Lumiere.CC["7"] = Instance.new("UICorner", Lumiere.CC["2"]);
+    Lumiere.CC["7"]["CornerRadius"] = UDim.new(0.12, 0);
 
-    local trigger = Instance.new("TextButton", colorPreview)
-    trigger.BorderSizePixel = 0
-    trigger.TextColor3 = Color3.fromRGB(0, 0, 0)
-    trigger.TextSize = 14
-    trigger.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    trigger.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    trigger.Size = UDim2.new(1, 0, 1, 0)
-    trigger.BackgroundTransparency = 1
-    trigger.Name = "Trigger"
-    trigger.Text = ""
+    Lumiere.CC["8"] = Instance.new("Frame", Lumiere.CC["2"]);
+    Lumiere.CC["8"]["BorderSizePixel"] = 0;
+    Lumiere.CC["8"]["BackgroundColor3"] = Color3.fromRGB(32, 84, 201);
+    Lumiere.CC["8"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+    Lumiere.CC["8"]["Size"] = UDim2.new(0, 30, 0, 30);
+    Lumiere.CC["8"]["Position"] = UDim2.new(0.93087, 0, 0.483, 0);
+    Lumiere.CC["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["8"]["Name"] = [[Color]];
 
-    local isOpen = false
-    local currentHue, currentSat, currentVal = Colorpicker.Default:ToHSV()
+    Lumiere.CC["9"] = Instance.new("UICorner", Lumiere.CC["8"]);
+    Lumiere.CC["9"]["CornerRadius"] = UDim.new(0.25, 0);
 
-    local originalSize = UDim2.new(1, 0, 0, 49)
-    local expandedSize = UDim2.new(1, 0, 0, 215)
-    local originalCorner = mainCorner.CornerRadius
-    local expandedCorner = UDim.new(0, 6)
+    Lumiere.CC["a"] = Instance.new("TextButton", Lumiere.CC["8"]);
+    Lumiere.CC["a"]["BorderSizePixel"] = 0;
+    Lumiere.CC["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["a"]["TextSize"] = 14;
+    Lumiere.CC["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+    Lumiere.CC["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
+    Lumiere.CC["a"]["Size"] = UDim2.new(1, 0, 1, 0);
+    Lumiere.CC["a"]["BackgroundTransparency"] = 1;
+    Lumiere.CC["a"]["Name"] = [[Trigger]];
+    Lumiere.CC["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+    Lumiere.CC["a"]["Text"] = [[]];
 
-    local colorPanel = Instance.new("Frame", cpFrame)
-    colorPanel.Name = "ColorPanel"
-    colorPanel.Size = UDim2.new(1, -24, 0, 0)
-    colorPanel.Position = UDim2.new(0, 12, 0, 52)
-    colorPanel.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-    colorPanel.ClipsDescendants = true
-    colorPanel.Visible = false
-    colorPanel.BackgroundTransparency = 1
+    Lumiere.CC["b"] = Instance.new("LocalScript", Lumiere.CC["2"]);
+    Lumiere.CC["b"]["Name"] = [[Script]];
 
-    Instance.new("UICorner", colorPanel).CornerRadius = UDim.new(0, 10)
+    local function C_b()
+        local script = Lumiere.CC["b"];
+        local TweenService = game:GetService("TweenService")
+        local UserInputService = game:GetService("UserInputService")
 
-    local panelStroke = Instance.new("UIStroke", colorPanel)
-    panelStroke.Color = Color3.fromRGB(35, 35, 35)
-    panelStroke.Transparency = 1
+        local function CreateColorpicker(ColorpickerContainer, DefaultColor, Callback)
+            local ColorPreview = ColorpickerContainer:WaitForChild("Color")
+            local Trigger = ColorPreview:WaitForChild("Trigger")
+            local ComponentName = ColorpickerContainer:WaitForChild("ComponentName")
+            local MainCorner = ColorpickerContainer:WaitForChild("UICorner")
+            local ScrollFrame = ColorpickerContainer.Parent.Parent
 
-    local satValPicker = Instance.new("ImageLabel", colorPanel)
-    satValPicker.Name = "SaturationValuePicker"
-    satValPicker.Size = UDim2.new(1, -20, 0, 110)
-    satValPicker.Position = UDim2.new(0, 10, 0, 10)
-    satValPicker.Image = "rbxassetid://4155801252"
-    satValPicker.ImageTransparency = 1
-    satValPicker.BackgroundColor3 = Color3.fromHSV(currentHue, 1, 1)
-    Instance.new("UICorner", satValPicker).CornerRadius = UDim.new(0, 6)
+            ComponentName.AnchorPoint = Vector2.new(0, 0.5)
+            ComponentName.Position = UDim2.new(0, 15, 0, 24)
+            ColorPreview.AnchorPoint = Vector2.new(1, 0.5)
+            ColorPreview.Position = UDim2.new(1, -12, 0, 24)
 
-    local svCursor = Instance.new("Frame", satValPicker)
-    svCursor.Name = "SaturationValueCursor"
-    svCursor.Size = UDim2.new(0, 10, 0, 10)
-    svCursor.AnchorPoint = Vector2.new(0.5, 0.5)
-    svCursor.BackgroundTransparency = 1
-    local svStroke = Instance.new("UIStroke", svCursor)
-    svStroke.Color = Color3.fromRGB(175, 175, 175)
-    svStroke.Thickness = 2
-    Instance.new("UICorner", svCursor).CornerRadius = UDim.new(1, 0)
+            local isOpen = false
+            local currentHue, currentSat, currentVal = DefaultColor:ToHSV()
 
-    local hueSlider = Instance.new("Frame", colorPanel)
-    hueSlider.Name = "HueSlider"
-    hueSlider.Size = UDim2.new(1, -20, 0, 14)
-    hueSlider.Position = UDim2.new(0, 10, 0, 130)
-    hueSlider.BackgroundTransparency = 1
-    Instance.new("UICorner", hueSlider).CornerRadius = UDim.new(1, 0)
+            local originalSize = UDim2.new(1, 0, 0, 49)
+            local expandedSize = UDim2.new(1, 0, 0, 215)
+            local originalCorner = MainCorner.CornerRadius
+            local expandedCorner = UDim.new(0, 6)
 
-    local hueGradient = Instance.new("UIGradient", hueSlider)
-    hueGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.167, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.333, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(0.667, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.833, Color3.fromRGB(255, 0, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-    })
+            local ColorPanel = Instance.new("Frame")
+            ColorPanel.Name = "ColorPanel"
+            ColorPanel.Size = UDim2.new(1, -24, 0, 0)
+            ColorPanel.Position = UDim2.new(0, 12, 0, 52)
+            ColorPanel.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+            ColorPanel.ClipsDescendants = true
+            ColorPanel.Visible = false
+            ColorPanel.BackgroundTransparency = 1
+            ColorPanel.Parent = ColorpickerContainer
 
-    local hueCursor = Instance.new("Frame", hueSlider)
-    hueCursor.Name = "HueCursor"
-    hueCursor.Size = UDim2.new(0, 7, 0, 7)
-    hueCursor.AnchorPoint = Vector2.new(0.5, 0.5)
-    hueCursor.BackgroundTransparency = 1
-    local hStroke = Instance.new("UIStroke", hueCursor)
-    hStroke.Color = Color3.fromRGB(175, 175, 175)
-    hStroke.Thickness = 2
-    Instance.new("UICorner", hueCursor).CornerRadius = UDim.new(1, 0)
+            local PanelCorner = Instance.new("UICorner", ColorPanel)
+            PanelCorner.CornerRadius = UDim.new(0, 10)
 
-    local function updateUI(instant, fireCallback)
-        local pickedColor = Color3.fromHSV(currentHue, currentSat, currentVal)
-        local tInfo = instant and TweenInfo.new(0) or TweenInfo.new(0.1)
-        TweenService:Create(colorPreview, tInfo, { BackgroundColor3 = pickedColor }):Play()
-        TweenService:Create(satValPicker, tInfo, { BackgroundColor3 = Color3.fromHSV(currentHue, 1, 1) }):Play()
-        TweenService:Create(svCursor, tInfo, { Position = UDim2.new(currentSat, 0, 1 - currentVal, 0) }):Play()
-        TweenService:Create(hueCursor, tInfo, { Position = UDim2.new(currentHue, 0, 0.5, 0) }):Play()
-        if fireCallback then Colorpicker.Callback(pickedColor) end
-    end
+            local PanelStroke = Instance.new("UIStroke", ColorPanel)
+            PanelStroke.Color = Color3.fromRGB(35, 35, 35)
+            PanelStroke.Transparency = 1
 
-    local draggingSV, draggingH = false, false
-    local function toggleScroll(enabled)
-        if layout.Parent and layout.Parent:IsA("ScrollingFrame") then
-            layout.Parent.ScrollingEnabled = enabled
-        end
-    end
+            local SatValPicker = Instance.new("ImageLabel")
+            SatValPicker.Name = "SaturationValuePicker"
+            SatValPicker.Size = UDim2.new(1, -20, 0, 110)
+            SatValPicker.Position = UDim2.new(0, 10, 0, 10)
+            SatValPicker.Image = "rbxassetid://4155801252"
+            SatValPicker.ImageTransparency = 1
+            SatValPicker.BackgroundColor3 = Color3.fromHSV(currentHue, 1, 1)
+            SatValPicker.Parent = ColorPanel
+            Instance.new("UICorner", SatValPicker).CornerRadius = UDim.new(0, 6)
 
-    local function processInput(input, obj, mode)
-        local relX = math.clamp((input.Position.X - obj.AbsolutePosition.X) / obj.AbsoluteSize.X, 0, 1)
-        local relY = math.clamp((input.Position.Y - obj.AbsolutePosition.Y) / obj.AbsoluteSize.Y, 0, 1)
-        if mode == "SatVal" then
-            currentSat, currentVal = relX, 1 - relY
-        elseif mode == "Hue" then
-            currentHue = relX
-        end
-        updateUI(false, true)
-    end
+            local SatValCursor = Instance.new("Frame")
+            SatValCursor.Name = "SaturationValueCursor"
+            SatValCursor.Size = UDim2.new(0, 10, 0, 10)
+            SatValCursor.AnchorPoint = Vector2.new(0.5, 0.5)
+            SatValCursor.BackgroundTransparency = 1
+            SatValCursor.Parent = SatValPicker
+            local SCursorStroke = Instance.new("UIStroke", SatValCursor)
+            SCursorStroke.Color = Color3.fromRGB(175, 175, 175)
+            SCursorStroke.Thickness = 2
+            Instance.new("UICorner", SatValCursor).CornerRadius = UDim.new(1, 0)
 
-    satValPicker.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            draggingSV = true
-            toggleScroll(false)
-            processInput(input, satValPicker, "SatVal")
-        end
-    end)
-    hueSlider.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            draggingH = true
-            toggleScroll(false)
-            processInput(input, hueSlider, "Hue")
-        end
-    end)
-    UserInputService.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            if draggingSV then processInput(input, satValPicker, "SatVal")
-            elseif draggingH then processInput(input, hueSlider, "Hue") end
-        end
-    end)
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            draggingSV, draggingH = false, false
-            toggleScroll(true)
-        end
-    end)
+            local HueSlider = Instance.new("Frame")
+            HueSlider.Name = "HueSlider"
+            HueSlider.Size = UDim2.new(1, -20, 0, 14)
+            HueSlider.Position = UDim2.new(0, 10, 0, 130)
+            HueSlider.BackgroundTransparency = 1
+            HueSlider.Parent = ColorPanel
+            Instance.new("UICorner", HueSlider).CornerRadius = UDim.new(1, 0)
 
-    trigger.MouseButton1Click:Connect(function()
-        isOpen = not isOpen
-        local t = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-        if isOpen then
-            cpFrame.ZIndex = 2
-            colorPanel.Visible = true
-            task.wait()
-            TweenService:Create(cpFrame, t, { Size = expandedSize }):Play()
-            TweenService:Create(mainCorner, t, { CornerRadius = expandedCorner }):Play()
-            TweenService:Create(colorPanel, t, { Size = UDim2.new(1, -24, 0, 150), BackgroundTransparency = 0 }):Play()
-            TweenService:Create(panelStroke, t, { Transparency = 0 }):Play()
-            TweenService:Create(satValPicker, t, { ImageTransparency = 0 }):Play()
-            TweenService:Create(hueSlider, t, { BackgroundTransparency = 0 }):Play()
-        else
-            cpFrame.ZIndex = 1
-            TweenService:Create(colorPanel, t, { Size = UDim2.new(1, -24, 0, 0), BackgroundTransparency = 1 }):Play()
-            TweenService:Create(panelStroke, t, { Transparency = 1 }):Play()
-            TweenService:Create(satValPicker, t, { ImageTransparency = 1 }):Play()
-            TweenService:Create(hueSlider, t, { BackgroundTransparency = 1 }):Play()
-            TweenService:Create(cpFrame, t, { Size = originalSize }):Play()
-            TweenService:Create(mainCorner, t, { CornerRadius = originalCorner }):Play()
-            task.delay(0.3, function() if not isOpen then colorPanel.Visible = false end end)
-        end
-    end)
+            local HueGradient = Instance.new("UIGradient", HueSlider)
+            HueGradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+                ColorSequenceKeypoint.new(0.167, Color3.fromRGB(255, 255, 0)),
+                ColorSequenceKeypoint.new(0.333, Color3.fromRGB(0, 255, 0)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
+                ColorSequenceKeypoint.new(0.667, Color3.fromRGB(0, 0, 255)),
+                ColorSequenceKeypoint.new(0.833, Color3.fromRGB(255, 0, 255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+            })
 
-    updateUI(true, false)
-    return Colorpicker
+            local HueCursor = Instance.new("Frame")
+            HueCursor.Name = "HueCursor"
+            HueCursor.Size = UDim2.new(0, 7, 0, 7)
+            HueCursor.AnchorPoint = Vector2.new(0.5, 0.5)
+            HueCursor.BackgroundTransparency = 1
+            HueCursor.Parent = HueSlider
+            local HCursorStroke = Instance.new("UIStroke", HueCursor)
+            HCursorStroke.Color = Color3.fromRGB(175, 175, 175)
+            HCursorStroke.Thickness = 2
+            Instance.new("UICorner", HueCursor).CornerRadius = UDim.new(1, 0)
+
+            local function UpdateUI(instant, fireCallback)
+                local pickedColor = Color3.fromHSV(currentHue, currentSat, currentVal)
+                local tInfo = instant and TweenInfo.new(0) or TweenInfo.new(0.1)
+
+                TweenService:Create(ColorPreview, tInfo, { BackgroundColor3 = pickedColor }):Play()
+                TweenService:Create(SatValPicker, tInfo, { BackgroundColor3 = Color3.fromHSV(currentHue, 1, 1) }):Play()
+                TweenService:Create(SatValCursor, tInfo, { Position = UDim2.new(currentSat, 0, 1 - currentVal, 0) })
+                    :Play()
+                TweenService:Create(HueCursor, tInfo, { Position = UDim2.new(currentHue, 0, 0.5, 0) }):Play()
+
+                if Callback and fireCallback then
+                    Callback(pickedColor)
+                end
+            end
+
+            local draggingSV, draggingH = false, false
+            local function ToggleScroll(enabled)
+                if ScrollFrame and ScrollFrame:IsA("ScrollingFrame") then ScrollFrame.ScrollingEnabled = enabled end
+            end
+
+            local function ProcessInput(input, obj, type)
+                local relX = math.clamp((input.Position.X - obj.AbsolutePosition.X) / obj.AbsoluteSize.X, 0, 1)
+                local relY = math.clamp((input.Position.Y - obj.AbsolutePosition.Y) / obj.AbsoluteSize.Y, 0, 1)
+                if type == "SatVal" then
+                    currentSat, currentVal = relX, 1 - relY
+                elseif type == "Hue" then
+                    currentHue = relX
+                end
+                UpdateUI(false, true)
+            end
+
+            SatValPicker.InputBegan:Connect(function(i)
+                if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+                    draggingSV = true; ToggleScroll(false); ProcessInput(i, SatValPicker, "SatVal")
+                end
+            end)
+
+            HueSlider.InputBegan:Connect(function(i)
+                if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+                    draggingH = true; ToggleScroll(false); ProcessInput(i, HueSlider, "Hue")
+                end
+            end)
+
+            UserInputService.InputChanged:Connect(function(i)
+                if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then
+                    if draggingSV then
+                        ProcessInput(i, SatValPicker, "SatVal")
+                    elseif draggingH then
+                        ProcessInput(i, HueSlider, "Hue")
+                    end
+                end
+            end)
+
+            UserInputService.InputEnded:Connect(function(i)
+                if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+                    draggingSV, draggingH = false, false; ToggleScroll(true)
+                end
+            end)
+
+            Trigger.MouseButton1Click:Connect(function()
+                isOpen = not isOpen
+                local t = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+                if isOpen then
+                    ColorpickerContainer.ZIndex = 2
+                    ColorPanel.Visible = true
+                    task.wait()
+
+                    TweenService:Create(ColorpickerContainer, t, { Size = expandedSize }):Play()
+                    TweenService:Create(MainCorner, t, { CornerRadius = expandedCorner }):Play()
+
+                    TweenService:Create(ColorPanel, t, { Size = UDim2.new(1, -24, 0, 150), BackgroundTransparency = 0 })
+                        :Play()
+                    TweenService:Create(PanelStroke, t, { Transparency = 0 }):Play()
+                    TweenService:Create(SatValPicker, t, { ImageTransparency = 0 }):Play()
+                    TweenService:Create(HueSlider, t, { BackgroundTransparency = 0 }):Play()
+                else
+                    ColorpickerContainer.ZIndex = 1
+                    TweenService:Create(ColorPanel, t, { Size = UDim2.new(1, -24, 0, 0), BackgroundTransparency = 1 })
+                        :Play()
+                    TweenService:Create(PanelStroke, t, { Transparency = 1 }):Play()
+                    TweenService:Create(SatValPicker, t, { ImageTransparency = 1 }):Play()
+                    TweenService:Create(HueSlider, t, { BackgroundTransparency = 1 }):Play()
+
+                    TweenService:Create(ColorpickerContainer, t, { Size = originalSize }):Play()
+                    TweenService:Create(MainCorner, t, { CornerRadius = originalCorner }):Play()
+
+                    task.delay(0.3, function()
+                        if not isOpen then ColorPanel.Visible = false end
+                    end)
+                end
+            end)
+
+            UpdateUI(true, false)
+        end
+
+        CreateColorpicker(script.Parent, Colorpicker.Default, function(color)
+            Colorpicker.Callback(color)
+        end)
+    end;
+    task.spawn(C_b);
+
+    return Colorpicker
 end
 
-function LumiereLibrary:Notification(desc, duration)
-    CreateNotification(desc, duration)
+function LumiereLibrary:Notification(Description, Duration)
+    local TweenService = game:GetService("TweenService")
+    local TextService = game:GetService("TextService")
+
+    local Holder = game.CoreGui["Lumiere.CC"]:WaitForChild("NotificationHolder")
+
+    local Duration = Duration or 5
+    local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+    local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal)
+    local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+        Enum.FontStyle.Normal)
+
+    local Notif = Instance.new("CanvasGroup")
+    Notif.Name = "Notification"
+    Notif.Size = UDim2.new(1, 0, 0, 0)
+    Notif.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    Notif.GroupTransparency = 1
+    Notif.BorderSizePixel = 0
+    Notif.Parent = Holder
+
+    local ScaleObj = Instance.new("UIScale", Notif)
+    ScaleObj.Scale = 0.8
+
+    local UICorner = Instance.new("UICorner", Notif)
+    UICorner.CornerRadius = UDim.new(0, 10)
+
+    local UIStroke = Instance.new("UIStroke", Notif)
+    UIStroke.Color = Color3.fromRGB(35, 35, 35)
+    UIStroke.Thickness = 1
+    UIStroke.Transparency = 1
+
+    local TitleLabel = Instance.new("TextLabel", Notif)
+    TitleLabel.Name = "Title"
+    TitleLabel.Size = UDim2.new(1, -30, 0, 20)
+    TitleLabel.Position = UDim2.new(0, 15, 0, 15)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.FontFace = GothamBoldFont
+    TitleLabel.Text = "LUMIERE.CC"
+    TitleLabel.TextColor3 = Color3.fromRGB(32, 84, 201)
+    TitleLabel.TextSize = 13
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    local DescLabel = Instance.new("TextLabel", Notif)
+    DescLabel.Name = "Description"
+    DescLabel.BackgroundTransparency = 1
+    DescLabel.FontFace = GothamSemiFont
+    DescLabel.Text = Description
+    DescLabel.TextColor3 = Color3.fromRGB(132, 146, 176)
+    DescLabel.TextSize = 14
+    DescLabel.TextWrapped = true
+    DescLabel.TextXAlignment = Enum.TextXAlignment.Left
+    DescLabel.TextYAlignment = Enum.TextYAlignment.Top
+
+    local paddingX = 30
+    local topMargin = 35
+    local bottomPadding = 28
+
+    local maxWidth = Holder.AbsoluteSize.X - paddingX
+    local textSize = TextService:GetTextSize(Description, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
+
+    local targetHeight = textSize.Y + topMargin + bottomPadding
+    targetHeight = math.clamp(targetHeight, 80, 300)
+
+    DescLabel.Position = UDim2.new(0, 15, 0, topMargin)
+    DescLabel.Size = UDim2.new(1, -paddingX, 0, textSize.Y)
+
+    TweenService:Create(Notif, tInfo, { Size = UDim2.new(1, 0, 0, targetHeight), GroupTransparency = 0 }):Play()
+    TweenService:Create(ScaleObj, tInfo, { Scale = 1 }):Play()
+    TweenService:Create(UIStroke, tInfo, { Transparency = 0 }):Play()
+
+    local TimerBar = Instance.new("Frame", Notif)
+    TimerBar.Name = "Timer"
+    TimerBar.Size = UDim2.new(1, -24, 0, 2)
+    TimerBar.Position = UDim2.new(0, 12, 1, -8)
+    TimerBar.BackgroundColor3 = Color3.fromRGB(32, 84, 201)
+    TimerBar.BorderSizePixel = 0
+    TimerBar.ZIndex = 2
+
+    TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 0, 2) })
+        :Play()
+
+    task.delay(Duration, function()
+        local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
+        TweenService:Create(ScaleObj, tInfo, { Scale = 0.8 }):Play()
+        TweenService:Create(UIStroke, tInfo, { Transparency = 1 }):Play()
+        fadeOut:Play()
+        fadeOut.Completed:Connect(function()
+            Notif:Destroy()
+        end)
+    end)
 end
 
 return LumiereLibrary
