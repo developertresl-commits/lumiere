@@ -2,13 +2,13 @@ local LumiereLibrary = {}
 
 function LumiereLibrary:Window(params)
     local Window = {}
+
     Window.GameName = params.GameName
     Window.Version = params.Version
+
     local Lumiere = {}
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-
-    Lumiere["1"] = Instance.new("ScreenGui", TargetCore);
+    local TargetCore = (gethui and gethui()) or game:GetService("CoreGui")\n    Lumiere["1"] = Instance.new("ScreenGui", TargetCore);
     Lumiere["1"]["IgnoreGuiInset"] = true;
     Lumiere["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
     Lumiere["1"]["Name"] = [[Lumiere]];
@@ -23,6 +23,7 @@ function LumiereLibrary:Window(params)
     Lumiere["2"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
     Lumiere["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["2"]["Name"] = [[Main]];
+
     Lumiere["2"]:SetAttribute([[Minimized]], false);
 
     Lumiere["3"] = Instance.new("UICorner", Lumiere["2"]);
@@ -51,7 +52,7 @@ function LumiereLibrary:Window(params)
     Lumiere["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
     Lumiere["6"]["ImageColor3"] = Color3.fromRGB(114, 83, 255);
     Lumiere["6"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-    Lumiere["6"]["Image"] = [[rbxassetid://10886548714]];
+    Lumiere["6"]["Image"] = [[rbxassetid://110653068142193]];
     Lumiere["6"]["Size"] = UDim2.new(0, 85, 0, 87);
     Lumiere["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["6"]["BackgroundTransparency"] = 1;
@@ -66,12 +67,13 @@ function LumiereLibrary:Window(params)
     Lumiere["8"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["8"]["TextYAlignment"] = Enum.TextYAlignment.Top;
     Lumiere["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+    Lumiere["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+        Enum.FontStyle.Normal);
     Lumiere["8"]["TextColor3"] = Color3.fromRGB(114, 83, 255);
     Lumiere["8"]["BackgroundTransparency"] = 1;
     Lumiere["8"]["Size"] = UDim2.new(0, 68, 0, 19);
     Lumiere["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-    Lumiere["8"]["Text"] = [[LUMIERE]];
+    Lumiere["8"]["Text"] = [[ESSENCE]];
     Lumiere["8"]["Name"] = [[Title]];
     Lumiere["8"]["Position"] = UDim2.new(0.106, 0, 0.265, 0);
 
@@ -80,7 +82,8 @@ function LumiereLibrary:Window(params)
     Lumiere["9"]["TextSize"] = 15;
     Lumiere["9"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["9"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+    Lumiere["9"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+        Enum.FontStyle.Normal);
     Lumiere["9"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["9"]["BackgroundTransparency"] = 1;
     Lumiere["9"]["Size"] = UDim2.new(0, 315, 0, 19);
@@ -150,7 +153,8 @@ function LumiereLibrary:Window(params)
     Lumiere["12"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["12"]["TextSize"] = 14;
     Lumiere["12"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["12"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["12"]["BackgroundTransparency"] = 1;
     Lumiere["12"]["Name"] = [[Trigger]];
@@ -188,7 +192,8 @@ function LumiereLibrary:Window(params)
     Lumiere["17"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["17"]["TextSize"] = 14;
     Lumiere["17"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["17"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["17"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["17"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["17"]["BackgroundTransparency"] = 1;
     Lumiere["17"]["Name"] = [[Trigger]];
@@ -225,7 +230,8 @@ function LumiereLibrary:Window(params)
     Lumiere["1c"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["1c"]["TextSize"] = 14;
     Lumiere["1c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["1c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["1c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["1c"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["1c"]["BackgroundTransparency"] = 1;
     Lumiere["1c"]["Name"] = [[Trigger]];
@@ -322,7 +328,7 @@ function LumiereLibrary:Window(params)
     Lumiere["2b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
     Lumiere["2b"]["ImageColor3"] = Color3.fromRGB(114, 83, 255);
     Lumiere["2b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-    Lumiere["2b"]["Image"] = [[rbxassetid://10886548714]];
+    Lumiere["2b"]["Image"] = [[rbxassetid://110653068142193]];
     Lumiere["2b"]["Size"] = UDim2.new(0, 72, 0, 72);
     Lumiere["2b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["2b"]["BackgroundTransparency"] = 1;
@@ -336,7 +342,8 @@ function LumiereLibrary:Window(params)
     Lumiere["2d"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["2d"]["TextSize"] = 14;
     Lumiere["2d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["2d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["2d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["2d"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["2d"]["BackgroundTransparency"] = 1;
     Lumiere["2d"]["Name"] = [[Trigger]];
@@ -350,6 +357,7 @@ function LumiereLibrary:Window(params)
         local script = Lumiere["13"];
         local TweenService = game:GetService("TweenService")
         local TextService = game:GetService("TextService")
+
         local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
         local RootFolder = TargetRoot:FindFirstChild("Lumiere")
         local Holder = RootFolder:WaitForChild("NotificationHolder")
@@ -357,8 +365,11 @@ function LumiereLibrary:Window(params)
         function CreateNotification(Text, Duration)
             local Duration = Duration or 5
             local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+
+            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+                Enum.FontStyle.Normal)
+            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+                Enum.FontStyle.Normal)
 
             local Notif = Instance.new("CanvasGroup")
             Notif.Name = "Notification"
@@ -385,7 +396,7 @@ function LumiereLibrary:Window(params)
             TitleLabel.Position = UDim2.new(0, 15, 0, 15)
             TitleLabel.BackgroundTransparency = 1
             TitleLabel.FontFace = GothamBoldFont
-            TitleLabel.Text = "LUMIERE"
+            TitleLabel.Text = "ESSENCE"
             TitleLabel.TextColor3 = Color3.fromRGB(113, 82, 255)
             TitleLabel.TextSize = 13
             TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -404,8 +415,10 @@ function LumiereLibrary:Window(params)
             local paddingX = 30
             local topMargin = 35
             local bottomPadding = 28
+
             local maxWidth = Holder.AbsoluteSize.X - paddingX
             local textSize = TextService:GetTextSize(Text, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
+
             local targetHeight = textSize.Y + topMargin + bottomPadding
             targetHeight = math.clamp(targetHeight, 80, 300)
 
@@ -424,7 +437,8 @@ function LumiereLibrary:Window(params)
             TimerBar.BorderSizePixel = 0
             TimerBar.ZIndex = 2
 
-            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 0, 2) }):Play()
+            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear),
+                { Size = UDim2.new(0, 0, 0, 2) }):Play()
 
             task.delay(Duration, function()
                 local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
@@ -438,11 +452,13 @@ function LumiereLibrary:Window(params)
         end
 
         script.Parent.MouseEnter:Connect(function()
-            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) }):Play()
+            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) })
+                :Play()
         end)
 
         script.Parent.MouseLeave:Connect(function()
-            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) }):Play()
+            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) })
+                :Play()
         end)
 
         script.Parent.Trigger.MouseButton1Down:Connect(function()
@@ -459,22 +475,25 @@ function LumiereLibrary:Window(params)
         local TweenService = game:GetService("TweenService")
         local UserInputService = game:GetService("UserInputService")
         local TextService = game:GetService("TextService")
-        local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
-        local RootFolder = TargetRoot:FindFirstChild("Lumiere")
 
         local CloseButton = script.Parent
         local MainFrame = CloseButton.Parent.Parent.Parent.Parent:WaitForChild("Main")
         local MobileButton = MainFrame.Parent:FindFirstChild("MobileButton")
+
         local Holder = MainFrame.Parent:WaitForChild("NotificationHolder")
 
         local isMobile = not (UserInputService.KeyboardEnabled and UserInputService.MouseEnabled)
+
         local ToggleKey
 
         function CreateNotification(Text, Duration)
             local Duration = Duration or 5
             local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+
+            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+                Enum.FontStyle.Normal)
+            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+                Enum.FontStyle.Normal)
 
             local Notif = Instance.new("CanvasGroup")
             Notif.Name = "Notification"
@@ -501,7 +520,7 @@ function LumiereLibrary:Window(params)
             TitleLabel.Position = UDim2.new(0, 15, 0, 15)
             TitleLabel.BackgroundTransparency = 1
             TitleLabel.FontFace = GothamBoldFont
-            TitleLabel.Text = "LUMIERE"
+            TitleLabel.Text = "ESSENCE"
             TitleLabel.TextColor3 = Color3.fromRGB(113, 82, 255)
             TitleLabel.TextSize = 13
             TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -520,8 +539,10 @@ function LumiereLibrary:Window(params)
             local paddingX = 30
             local topMargin = 35
             local bottomPadding = 28
+
             local maxWidth = Holder.AbsoluteSize.X - paddingX
             local textSize = TextService:GetTextSize(Text, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
+
             local targetHeight = textSize.Y + topMargin + bottomPadding
             targetHeight = math.clamp(targetHeight, 80, 300)
 
@@ -540,7 +561,8 @@ function LumiereLibrary:Window(params)
             TimerBar.BorderSizePixel = 0
             TimerBar.ZIndex = 2
 
-            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 0, 2) }):Play()
+            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear),
+                { Size = UDim2.new(0, 0, 0, 2) }):Play()
 
             task.delay(Duration, function()
                 local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
@@ -554,17 +576,20 @@ function LumiereLibrary:Window(params)
         end
 
         CloseButton.MouseEnter:Connect(function()
-            TweenService:Create(CloseButton.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) }):Play()
+            TweenService:Create(CloseButton.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) })
+                :Play()
         end)
 
         CloseButton.MouseLeave:Connect(function()
-            TweenService:Create(CloseButton.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) }):Play()
+            TweenService:Create(CloseButton.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) })
+                :Play()
         end)
 
         CloseButton.Trigger.MouseButton1Down:Connect(function()
             if MainFrame then
                 MainFrame.Visible = false
             end
+
             if isMobile and MobileButton then
                 MobileButton.Visible = true
                 MobileButton.Interactable = true
@@ -572,6 +597,8 @@ function LumiereLibrary:Window(params)
                     Position = UDim2.new(0.1, 0, 0.25, 0)
                 }):Play()
             elseif not isMobile then
+                local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+                local RootFolder = TargetRoot:FindFirstChild("Lumiere")
                 if RootFolder and RootFolder.Main.Tabs:FindFirstChild("Settings") then
                     ToggleKey = tostring(RootFolder.Main.Tabs.Settings.Scroll.Layout["Toggle UI"].Keybind:GetAttribute("Key"))
                 else
@@ -591,6 +618,7 @@ function LumiereLibrary:Window(params)
         local script = Lumiere["1d"];
         local TweenService = game:GetService("TweenService")
         local TextService = game:GetService("TextService")
+
         local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
         local RootFolder = TargetRoot:FindFirstChild("Lumiere")
         local Holder = RootFolder:WaitForChild("NotificationHolder")
@@ -598,8 +626,11 @@ function LumiereLibrary:Window(params)
         function CreateNotification(Text, Duration)
             local Duration = Duration or 5
             local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+
+            local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+                Enum.FontStyle.Normal)
+            local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+                Enum.FontStyle.Normal)
 
             local Notif = Instance.new("CanvasGroup")
             Notif.Name = "Notification"
@@ -626,7 +657,7 @@ function LumiereLibrary:Window(params)
             TitleLabel.Position = UDim2.new(0, 15, 0, 15)
             TitleLabel.BackgroundTransparency = 1
             TitleLabel.FontFace = GothamBoldFont
-            TitleLabel.Text = "LUMIERE"
+            TitleLabel.Text = "ESSENCE"
             TitleLabel.TextColor3 = Color3.fromRGB(113, 82, 255)
             TitleLabel.TextSize = 13
             TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -645,8 +676,10 @@ function LumiereLibrary:Window(params)
             local paddingX = 30
             local topMargin = 35
             local bottomPadding = 28
+
             local maxWidth = Holder.AbsoluteSize.X - paddingX
             local textSize = TextService:GetTextSize(Text, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
+
             local targetHeight = textSize.Y + topMargin + bottomPadding
             targetHeight = math.clamp(targetHeight, 80, 300)
 
@@ -665,7 +698,8 @@ function LumiereLibrary:Window(params)
             TimerBar.BorderSizePixel = 0
             TimerBar.ZIndex = 2
 
-            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 0, 2) }):Play()
+            TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear),
+                { Size = UDim2.new(0, 0, 0, 2) }):Play()
 
             task.delay(Duration, function()
                 local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
@@ -679,11 +713,13 @@ function LumiereLibrary:Window(params)
         end
 
         script.Parent.MouseEnter:Connect(function()
-            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) }):Play()
+            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(113, 82, 255) })
+                :Play()
         end)
 
         script.Parent.MouseLeave:Connect(function()
-            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) }):Play()
+            TweenService:Create(script.Parent.Image, TweenInfo.new(0.2), { ImageColor3 = Color3.fromRGB(125, 125, 125) })
+                :Play()
         end)
 
         script.Parent.Trigger.MouseButton1Down:Connect(function()
@@ -699,8 +735,10 @@ function LumiereLibrary:Window(params)
         local script = Lumiere["25"];
         local UserInputService = game:GetService("UserInputService")
         local Players = game:GetService("Players")
+
         local main = script.Parent
         local tabsFolder = main:WaitForChild("Tabs")
+
         local dragging = false
         local dragStart
         local startPos
@@ -717,8 +755,9 @@ function LumiereLibrary:Window(params)
 
         UserInputService.InputBegan:Connect(function(input, gameProcessed)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                local playerGui = game:WaitForChild("CoreGui") or Players.LocalPlayer:WaitForChild("PlayerGui")
-                local objects = playerGui:GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
+                local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+                local objects = TargetRoot:GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
+
                 local validTarget = false
                 local forbidden = false
 
@@ -762,17 +801,22 @@ function LumiereLibrary:Window(params)
     local function C_2e()
         local script = Lumiere["2e"];
         local TweenService = game:GetService("TweenService")
+
         local MobileButton = script.Parent
         local Trigger = MobileButton:WaitForChild("Trigger")
         local MainFrame = MobileButton.Parent:WaitForChild("Main")
+
         local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
 
         Trigger.MouseButton1Down:Connect(function()
             MobileButton.Interactable = false
+
             local hideTween = TweenService:Create(MobileButton, tInfo, {
                 Position = UDim2.new(0.1, 0, -0.25, 0)
             })
+
             hideTween:Play()
+
             hideTween.Completed:Connect(function()
                 MobileButton.Visible = false
                 if MainFrame then
@@ -788,15 +832,17 @@ end
 
 function LumiereLibrary:Tab(params)
     local Tab = {}
+
     Tab.Name = params.Name
     Tab.Image = params.Image
     Tab.Selected = params.Selected
+
     local Lumiere = {}
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local RootFolder = TargetCore:FindFirstChild("Lumiere")
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local Root = TargetRoot:FindFirstChild("Lumiere")
 
-    Lumiere["2"] = Instance.new("Frame", RootFolder.Main.Left.Layout);
+    Lumiere["2"] = Instance.new("Frame", Root.Main.Left.Layout);
     Lumiere["2"]["BorderSizePixel"] = 0;
     Lumiere["2"]["BackgroundColor3"] = Color3.fromRGB(11, 11, 11);
     Lumiere["2"]["Size"] = UDim2.new(0, 157, 0, 35);
@@ -817,7 +863,8 @@ function LumiereLibrary:Tab(params)
     Lumiere["5"]["TextSize"] = 14;
     Lumiere["5"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["5"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["5"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["5"]["BackgroundTransparency"] = 1;
     Lumiere["5"]["Size"] = UDim2.new(0.76535, 0, 1, 0);
@@ -860,7 +907,8 @@ function LumiereLibrary:Tab(params)
     Lumiere["b"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["b"]["TextSize"] = 14;
     Lumiere["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["b"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["b"]["BackgroundTransparency"] = 1;
     Lumiere["b"]["Name"] = [[Trigger]];
@@ -870,7 +918,7 @@ function LumiereLibrary:Tab(params)
     Lumiere["c"] = Instance.new("LocalScript", Lumiere["2"]);
     Lumiere["c"]["Name"] = [[Script]];
 
-    Lumiere["d"] = Instance.new("Frame", RootFolder.Main.Tabs);
+    Lumiere["d"] = Instance.new("Frame", Root.Main.Tabs);
     Lumiere["d"]["Visible"] = false;
     Lumiere["d"]["Interactable"] = false;
     Lumiere["d"]["BorderSizePixel"] = 0;
@@ -898,7 +946,7 @@ function LumiereLibrary:Tab(params)
     Lumiere["f"] = Instance.new("Frame", Lumiere["e"]);
     Lumiere["f"]["BorderSizePixel"] = 0;
     Lumiere["f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["f"]["Size"] = UDim2.new(0.98783, 0, 15.22455, 0);
+    Lumiere["f"]["Size"] = UDim2.new(0.98783, 0, 1.0, 0);
     Lumiere["f"]["Position"] = UDim2.new(0.00243, 0, 0.01348, 0);
     Lumiere["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["f"]["Name"] = [[Layout]];
@@ -916,19 +964,25 @@ function LumiereLibrary:Tab(params)
     local function C_c()
         local script = Lumiere["c"];
         local TweenService = game:GetService("TweenService")
+
         local CenterPos = UDim2.new(0.318, 0, 0.174, 0)
         local RightPos = UDim2.new(1.1, 0, 0.174, 0)
         local AnimDuration = 0.25
         local TInfo = TweenInfo.new(AnimDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-        local TabsFolder = script.Parent.Parent.Parent.Parent.Tabs
-        local TabButtonsFolder = script.Parent.Parent
+
+        local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+        local RootFolder = TargetRoot:FindFirstChild("Lumiere")
+        local TabsFolder = RootFolder.Main.Tabs
+        local TabButtonsFolder = RootFolder.Main.Left.Layout
         local CurrentTabContent = TabsFolder[script.Parent.Name]
+
         local IsTabActive = false
         local IsAnimating = false
+
         local Color_Active = Color3.fromRGB(113, 82, 255)
         local Color_Inactive = Color3.fromRGB(125, 125, 125)
-        local Active = Tab.Selected
 
+        local Active = Tab.Selected
         if Active then
             IsTabActive = true
             script.Parent.Bar.BackgroundTransparency = 0
@@ -936,6 +990,7 @@ function LumiereLibrary:Tab(params)
             script.Parent.Image.ImageColor3 = Color_Active
             script.Parent.TabName.TextColor3 = Color_Active
             script.Parent.UIStroke.Transparency = 0
+
             CurrentTabContent.Visible = true
             CurrentTabContent.Interactable = true
             CurrentTabContent.Position = CenterPos
@@ -947,6 +1002,7 @@ function LumiereLibrary:Tab(params)
 
         script.Parent.Trigger.MouseButton1Down:Connect(function()
             if IsTabActive or IsAnimating then return end
+
             IsAnimating = true
             IsTabActive = true
 
@@ -978,6 +1034,7 @@ function LumiereLibrary:Tab(params)
                 OldTab.Interactable = false
                 local SlideOut = TweenService:Create(OldTab, TInfo, { Position = RightPos })
                 SlideOut:Play()
+
                 task.wait(AnimDuration * 0.8)
                 OldTab.Visible = false
             end
@@ -985,8 +1042,10 @@ function LumiereLibrary:Tab(params)
             CurrentTabContent.Position = RightPos
             CurrentTabContent.Visible = true
             CurrentTabContent.Interactable = true
+
             local SlideIn = TweenService:Create(CurrentTabContent, TInfo, { Position = CenterPos })
             SlideIn:Play()
+
             SlideIn.Completed:Connect(function()
                 IsAnimating = false
             end)
@@ -1015,15 +1074,17 @@ end
 
 function LumiereLibrary:Button(params)
     local Button = {}
+
     Button.Name = params.Name
     Button.Parent = params.Parent
     Button.Callback = params.Callback or function() end
+
     local Lumiere = {}
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local Root = TargetRoot:FindFirstChild("Lumiere")
+    local TabFrame = Root.Main.Tabs:FindFirstChild(Button.Parent)
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local RootFolder = TargetCore:FindFirstChild("Lumiere")
-
-    Lumiere["2"] = Instance.new("Frame", RootFolder.Main.Tabs[Button.Parent].Scroll.Layout);
+    Lumiere["2"] = Instance.new("Frame", TabFrame.Scroll.Layout);
     Lumiere["2"]["BorderSizePixel"] = 0;
     Lumiere["2"]["BackgroundColor3"] = Color3.fromRGB(21, 21, 21);
     Lumiere["2"]["Size"] = UDim2.new(0, 405, 0, 49);
@@ -1052,7 +1113,8 @@ function LumiereLibrary:Button(params)
     Lumiere["5"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["5"]["TextScaled"] = true;
     Lumiere["5"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["5"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["5"]["BackgroundTransparency"] = 1;
     Lumiere["5"]["AnchorPoint"] = Vector2.new(0, 0.5);
@@ -1080,7 +1142,8 @@ function LumiereLibrary:Button(params)
     Lumiere["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["a"]["TextSize"] = 14;
     Lumiere["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["a"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["a"]["BackgroundTransparency"] = 1;
     Lumiere["a"]["Name"] = [[Trigger]];
@@ -1093,18 +1156,24 @@ function LumiereLibrary:Button(params)
     local function C_b()
         local script = Lumiere["b"];
         local TweenService = game:GetService("TweenService")
+
         local function CreateButton(ButtonContainer, Callback)
             local Trigger = ButtonContainer:WaitForChild("Trigger")
             local ComponentName = ButtonContainer:WaitForChild("ComponentName")
             local Icon = ButtonContainer:WaitForChild("Image")
+
             local DefaultColor = Color3.fromRGB(125, 125, 125)
             local ClickColor = Color3.fromRGB(113, 82, 255)
+
             local tInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 
             Trigger.MouseButton1Down:Connect(function()
                 TweenService:Create(ComponentName, tInfo, { TextColor3 = ClickColor }):Play()
                 TweenService:Create(Icon, tInfo, { ImageColor3 = ClickColor }):Play()
-                if Callback then Callback() end
+
+                if Callback then
+                    Callback()
+                end
             end)
 
             local function ResetColor()
@@ -1115,7 +1184,10 @@ function LumiereLibrary:Button(params)
             Trigger.MouseButton1Up:Connect(ResetColor)
             Trigger.MouseLeave:Connect(ResetColor)
         end
-        CreateButton(script.Parent, function() Button.Callback() end)
+
+        CreateButton(script.Parent, function()
+            Button.Callback()
+        end)
     end;
     task.spawn(C_b);
 
@@ -1124,18 +1196,20 @@ end
 
 function LumiereLibrary:Toggle(params)
     local Toggle = {}
+
     Toggle.Name = params.Name
     Toggle.Parent = params.Parent
     Toggle.Default = params.Default or false
     Toggle.UseKeybind = params.UseKeybind or false
     Toggle.DefaultKey = params.DefaultKey or Enum.KeyCode.Unknown
     Toggle.Callback = params.Callback or function() end
+
     local Lumiere = {}
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local Root = TargetRoot:FindFirstChild("Lumiere")
+    local TabFrame = Root.Main.Tabs:FindFirstChild(Toggle.Parent)
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local RootFolder = TargetCore:FindFirstChild("Lumiere")
-
-    Lumiere["2"] = Instance.new("Frame", RootFolder.Main.Tabs[Toggle.Parent].Scroll.Layout);
+    Lumiere["2"] = Instance.new("Frame", TabFrame.Scroll.Layout);
     Lumiere["2"]["BorderSizePixel"] = 0;
     Lumiere["2"]["BackgroundColor3"] = Color3.fromRGB(21, 21, 21);
     Lumiere["2"]["Size"] = UDim2.new(0, 405, 0, 49);
@@ -1150,7 +1224,8 @@ function LumiereLibrary:Toggle(params)
     Lumiere["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["3"]["TextScaled"] = true;
     Lumiere["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["3"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["3"]["BackgroundTransparency"] = 1;
     Lumiere["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
@@ -1206,7 +1281,8 @@ function LumiereLibrary:Toggle(params)
     Lumiere["d"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["d"]["TextSize"] = 14;
     Lumiere["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["d"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["d"]["BackgroundTransparency"] = 1;
     Lumiere["d"]["Name"] = [[Trigger]];
@@ -1225,6 +1301,7 @@ function LumiereLibrary:Toggle(params)
     Lumiere["f"]["Position"] = UDim2.new(0.77, 0, 0.483, 0);
     Lumiere["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["f"]["Name"] = [[Keybind]];
+
     Lumiere["f"]:SetAttribute([[Key]], [[nil]]);
 
     Lumiere["10"] = Instance.new("UIStroke", Lumiere["f"]);
@@ -1240,13 +1317,15 @@ function LumiereLibrary:Toggle(params)
     Lumiere["12"]["TextSize"] = 14;
     Lumiere["12"]["TextScaled"] = true;
     Lumiere["12"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["12"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["12"]["BackgroundTransparency"] = 1;
     Lumiere["12"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
     Lumiere["12"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["12"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["12"]["Text"] = [[?]];
+    local keyTextObj = Lumiere["12"]
     Lumiere["12"]["Name"] = [[KeyText]];
     Lumiere["12"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
@@ -1261,7 +1340,8 @@ function LumiereLibrary:Toggle(params)
     Lumiere["15"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["15"]["TextSize"] = 14;
     Lumiere["15"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["15"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["15"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["15"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["15"]["BackgroundTransparency"] = 1;
     Lumiere["15"]["Name"] = [[Trigger]];
@@ -1275,6 +1355,7 @@ function LumiereLibrary:Toggle(params)
         local script = Lumiere["e"];
         local UserInputService = game:GetService("UserInputService")
         local TweenService = game:GetService("TweenService")
+
         local function CreateToggle(Container, DefaultState, UseKeybind, DefaultKey, Callback)
             local ToggleFrame = Container:WaitForChild("Toggle")
             local Dot = ToggleFrame:WaitForChild("Dot")
@@ -1287,6 +1368,7 @@ function LumiereLibrary:Toggle(params)
             local currentKey = DefaultKey or Enum.KeyCode.Unknown
             local isListening = false
             local tInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
             local isPC = UserInputService.KeyboardEnabled and UserInputService.MouseEnabled
             local keybindEnabled = UseKeybind and isPC
 
@@ -1296,6 +1378,7 @@ function LumiereLibrary:Toggle(params)
                 local currentTInfo = instant and TweenInfo.new(0) or tInfo
                 local targetPos = isOn and UDim2.new(0.8, 0, 0.5, 0) or UDim2.new(0.2, 0, 0.5, 0)
                 local targetColor = isOn and Color3.fromRGB(113, 82, 255) or Color3.fromRGB(150, 150, 150)
+
                 TweenService:Create(Dot, currentTInfo, {
                     Position = targetPos,
                     BackgroundColor3 = targetColor
@@ -1312,10 +1395,12 @@ function LumiereLibrary:Toggle(params)
 
             if keybindEnabled then
                 KeyText.Text = "?"
+
                 KeyTrigger.MouseButton1Click:Connect(function()
                     if isListening then return end
                     isListening = true
                     KeyText.Text = "..."
+
                     local connection
                     connection = UserInputService.InputBegan:Connect(function(input)
                         local keyPressed = nil
@@ -1324,6 +1409,7 @@ function LumiereLibrary:Toggle(params)
                         elseif input.UserInputType == Enum.UserInputType.MouseButton2 or input.UserInputType == Enum.UserInputType.MouseButton3 then
                             keyPressed = input.UserInputType
                         end
+
                         if keyPressed then
                             connection:Disconnect()
                             currentKey = keyPressed
@@ -1333,6 +1419,7 @@ function LumiereLibrary:Toggle(params)
                         end
                     end)
                 end)
+
                 UserInputService.InputBegan:Connect(function(input, gpe)
                     if gpe or isListening then return end
                     if currentKey ~= Enum.KeyCode.Unknown then
@@ -1342,8 +1429,10 @@ function LumiereLibrary:Toggle(params)
                     end
                 end)
             end
+
             UpdateVisuals(true)
         end
+
         CreateToggle(script.Parent, Toggle.Default, Toggle.UseKeybind, Toggle.DefaultKey, function(state)
             Toggle.Callback(state)
         end)
@@ -1353,8 +1442,10 @@ function LumiereLibrary:Toggle(params)
     local function C_16()
         local script = Lumiere["16"];
         local keyText = script.Parent.KeyText
+
         keyText:GetPropertyChangedSignal("Text"):Connect(function()
             local currentText = keyText.Text
+
             if #currentText > 3 then
                 keyText.Text = string.sub(currentText, 1, 3)
             end
@@ -1367,18 +1458,20 @@ end
 
 function LumiereLibrary:Slider(params)
     local Slider = {}
+
     Slider.Name = params.Name
     Slider.Parent = params.Parent
     Slider.Min = params.Min or 0
     Slider.Max = params.Max or 100
     Slider.Default = params.Default or 50
     Slider.Callback = params.Callback or function() end
+
     local Lumiere = {}
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local Root = TargetRoot:FindFirstChild("Lumiere")
+    local TabFrame = Root.Main.Tabs:FindFirstChild(Slider.Parent)
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local RootFolder = TargetCore:FindFirstChild("Lumiere")
-
-    Lumiere["2"] = Instance.new("Frame", RootFolder.Main.Tabs[Slider.Parent].Scroll.Layout);
+    Lumiere["2"] = Instance.new("Frame", TabFrame.Scroll.Layout);
     Lumiere["2"]["BorderSizePixel"] = 0;
     Lumiere["2"]["BackgroundColor3"] = Color3.fromRGB(21, 21, 21);
     Lumiere["2"]["Size"] = UDim2.new(0, 405, 0, 49);
@@ -1393,7 +1486,8 @@ function LumiereLibrary:Slider(params)
     Lumiere["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["3"]["TextScaled"] = true;
     Lumiere["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["3"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["3"]["BackgroundTransparency"] = 1;
     Lumiere["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
@@ -1437,7 +1531,8 @@ function LumiereLibrary:Slider(params)
     Lumiere["b"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["b"]["TextSize"] = 14;
     Lumiere["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["b"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["b"]["BackgroundTransparency"] = 1;
     Lumiere["b"]["Name"] = [[Trigger]];
@@ -1449,7 +1544,8 @@ function LumiereLibrary:Slider(params)
     Lumiere["c"]["TextSize"] = 15;
     Lumiere["c"]["TextXAlignment"] = Enum.TextXAlignment.Right;
     Lumiere["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["c"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["c"]["BackgroundTransparency"] = 1;
     Lumiere["c"]["Size"] = UDim2.new(0.08687, 0, 1, 0);
@@ -1468,12 +1564,15 @@ function LumiereLibrary:Slider(params)
         local script = Lumiere["e"];
         local TweenService = game:GetService("TweenService")
         local UserInputService = game:GetService("UserInputService")
+
         local function CreateSlider(SliderContainer, Min, Max, Default, Callback)
             local SliderFrame = SliderContainer:WaitForChild("Slider")
             local Trigger = SliderFrame:WaitForChild("Trigger")
             local ValueLabel = SliderContainer:WaitForChild("Value")
             local ScrollFrame = SliderContainer.Parent.Parent
+
             local fillColor = Color3.fromRGB(125, 125, 125)
+
             local Fill = Instance.new("Frame")
             Fill.Name = "Fill"
             Fill.BackgroundColor3 = fillColor
@@ -1482,27 +1581,37 @@ function LumiereLibrary:Slider(params)
             local startPercent = math.clamp((Default - Min) / (Max - Min), 0, 1)
             Fill.Size = UDim2.new(startPercent, 0, 1, 0)
             Fill.Parent = SliderFrame
+
             local FillCorner = Instance.new("UICorner")
             FillCorner.CornerRadius = SliderFrame:WaitForChild("UICorner").CornerRadius
             FillCorner.Parent = Fill
+
             Trigger.ZIndex = 5
+
             local dragging = false
+
             local function ToggleScroll(enabled)
                 if ScrollFrame and ScrollFrame:IsA("ScrollingFrame") then
                     ScrollFrame.ScrollingEnabled = enabled
                 end
             end
+
             local function UpdateSlider(input)
                 local sliderSize = SliderFrame.AbsoluteSize.X
                 local sliderPos = SliderFrame.AbsolutePosition.X
                 local inputPos = input.Position.X
+
                 local percent = math.clamp((inputPos - sliderPos) / sliderSize, 0, 1)
                 local currentValue = math.round(Min + (percent * (Max - Min)))
+
                 ValueLabel.Text = tostring(currentValue)
+
                 local tInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
                 TweenService:Create(Fill, tInfo, { Size = UDim2.new(percent, 0, 1, 0) }):Play()
+
                 if Callback then Callback(currentValue) end
             end
+
             Trigger.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     dragging = true
@@ -1510,19 +1619,23 @@ function LumiereLibrary:Slider(params)
                     UpdateSlider(input)
                 end
             end)
+
             UserInputService.InputChanged:Connect(function(input)
                 if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                     UpdateSlider(input)
                 end
             end)
+
             UserInputService.InputEnded:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     dragging = false
                     ToggleScroll(true)
                 end
             end)
+
             ValueLabel.Text = tostring(Default)
         end
+
         CreateSlider(script.Parent, Slider.Min, Slider.Max, Slider.Default, function(val) Slider.Callback(val) end)
     end;
     task.spawn(C_e);
@@ -1532,16 +1645,18 @@ end
 
 function LumiereLibrary:Textbox(params)
     local Textbox = {}
+
     Textbox.Name = params.Name
     Textbox.Parent = params.Parent
     Textbox.Placeholder = params.Placeholder
     Textbox.Callback = params.Callback or function() end
+
     local Lumiere = {}
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local Root = TargetRoot:FindFirstChild("Lumiere")
+    local TabFrame = Root.Main.Tabs:FindFirstChild(Textbox.Parent)
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local RootFolder = TargetCore:FindFirstChild("Lumiere")
-
-    Lumiere["2"] = Instance.new("Frame", RootFolder.Main.Tabs[Textbox.Parent].Scroll.Layout);
+    Lumiere["2"] = Instance.new("Frame", TabFrame.Scroll.Layout);
     Lumiere["2"]["BorderSizePixel"] = 0;
     Lumiere["2"]["BackgroundColor3"] = Color3.fromRGB(21, 21, 21);
     Lumiere["2"]["Size"] = UDim2.new(0, 405, 0, 49);
@@ -1556,7 +1671,8 @@ function LumiereLibrary:Textbox(params)
     Lumiere["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["3"]["TextScaled"] = true;
     Lumiere["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["3"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["3"]["BackgroundTransparency"] = 1;
     Lumiere["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
@@ -1583,12 +1699,12 @@ function LumiereLibrary:Textbox(params)
     Lumiere["8"]["Name"] = [[Box]];
     Lumiere["8"]["PlaceholderColor3"] = Color3.fromRGB(71, 71, 71);
     Lumiere["8"]["BorderSizePixel"] = 0;
-    Lumiere["8"]["TextWrapped"] = true;
     Lumiere["8"]["TextSize"] = 14;
     Lumiere["8"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
-    Lumiere["8"]["TextScaled"] = true;
+    Lumiere["8"]["TextScaled"] = false;
     Lumiere["8"]["BackgroundColor3"] = Color3.fromRGB(11, 11, 11);
-    Lumiere["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["8"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
     Lumiere["8"]["ClearTextOnFocus"] = false;
     Lumiere["8"]["Size"] = UDim2.new(0, 142, 0, 25);
@@ -1611,18 +1727,23 @@ function LumiereLibrary:Textbox(params)
 
     local function C_c()
         local script = Lumiere["c"];
+        local TweenService = game:GetService("TweenService")
+
         local function CreateTextbox(TextboxContainer, Placeholder, Callback)
             local Box = TextboxContainer:WaitForChild("Box")
             local InputField = Box
+
             InputField.PlaceholderText = Placeholder or "Placeholder..."
             InputField.Text = ""
             InputField.ClipsDescendants = true
+
             InputField.FocusLost:Connect(function(enterPressed)
                 if Callback then
                     Callback(InputField.Text)
                 end
             end)
         end
+
         CreateTextbox(script.Parent, Textbox.Placeholder, function(text)
             Textbox.Callback(text)
         end)
@@ -1634,16 +1755,18 @@ end
 
 function LumiereLibrary:Keybind(params)
     local Keybind = {}
+
     Keybind.Name = params.Name
     Keybind.Parent = params.Parent
     Keybind.DefaultKey = params.DefaultKey or Enum.KeyCode.F
     Keybind.Callback = params.Callback or function() end
+
     local Lumiere = {}
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local Root = TargetRoot:FindFirstChild("Lumiere")
+    local TabFrame = Root.Main.Tabs:FindFirstChild(Keybind.Parent)
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local RootFolder = TargetCore:FindFirstChild("Lumiere")
-
-    Lumiere["2"] = Instance.new("Frame", RootFolder.Main.Tabs[Keybind.Parent].Scroll.Layout);
+    Lumiere["2"] = Instance.new("Frame", TabFrame.Scroll.Layout);
     Lumiere["2"]["BorderSizePixel"] = 0;
     Lumiere["2"]["BackgroundColor3"] = Color3.fromRGB(21, 21, 21);
     Lumiere["2"]["Size"] = UDim2.new(0, 405, 0, 49);
@@ -1658,7 +1781,8 @@ function LumiereLibrary:Keybind(params)
     Lumiere["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["3"]["TextScaled"] = true;
     Lumiere["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["3"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["3"]["BackgroundTransparency"] = 1;
     Lumiere["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
@@ -1689,6 +1813,7 @@ function LumiereLibrary:Keybind(params)
     Lumiere["8"]["Position"] = UDim2.new(0.93087, 0, 0.483, 0);
     Lumiere["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["8"]["Name"] = [[Keybind]];
+
     Lumiere["8"]:SetAttribute([[Key]], [[nil]]);
 
     Lumiere["9"] = Instance.new("UIStroke", Lumiere["8"]);
@@ -1704,7 +1829,8 @@ function LumiereLibrary:Keybind(params)
     Lumiere["b"]["TextSize"] = 14;
     Lumiere["b"]["TextScaled"] = true;
     Lumiere["b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["b"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["b"]["BackgroundTransparency"] = 1;
     Lumiere["b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
@@ -1725,7 +1851,8 @@ function LumiereLibrary:Keybind(params)
     Lumiere["e"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["e"]["TextSize"] = 14;
     Lumiere["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["e"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["e"]["BackgroundTransparency"] = 1;
     Lumiere["e"]["Name"] = [[Trigger]];
@@ -1741,8 +1868,10 @@ function LumiereLibrary:Keybind(params)
     local function C_f()
         local script = Lumiere["f"];
         local keyText = script.Parent.KeyText
+
         keyText:GetPropertyChangedSignal("Text"):Connect(function()
             local currentText = keyText.Text
+
             if #currentText > 3 then
                 keyText.Text = string.sub(currentText, 1, 3)
             end
@@ -1753,21 +1882,29 @@ function LumiereLibrary:Keybind(params)
     local function C_10()
         local script = Lumiere["10"];
         local UserInputService = game:GetService("UserInputService")
+        local TweenService = game:GetService("TweenService")
+
         local function CreateKeybind(KeybindContainer, DefaultKey, Callback)
             local KeybindFrame = KeybindContainer:WaitForChild("Keybind")
             local Trigger = KeybindFrame:WaitForChild("Trigger")
             local KeyText = KeybindFrame:WaitForChild("KeyText")
+
             local currentKey = DefaultKey or Enum.KeyCode.F
             local isListening = false
+
             KeyText.Text = currentKey.Name
             script.Parent.Keybind:SetAttribute("Key", KeyText.Text)
+
             Trigger.MouseButton1Click:Connect(function()
                 if isListening then return end
+
                 isListening = true
                 KeyText.Text = "..."
+
                 local connection
                 connection = UserInputService.InputBegan:Connect(function(input)
                     local keyPressed = nil
+
                     if input.UserInputType == Enum.UserInputType.Keyboard then
                         if input.KeyCode == Enum.KeyCode.Escape then
                             keyPressed = Enum.KeyCode.Unknown
@@ -1779,6 +1916,7 @@ function LumiereLibrary:Keybind(params)
                     elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
                         keyPressed = Enum.UserInputType.MouseButton3
                     end
+
                     if keyPressed then
                         connection:Disconnect()
                         currentKey = keyPressed
@@ -1788,16 +1926,21 @@ function LumiereLibrary:Keybind(params)
                     end
                 end)
             end)
+
             UserInputService.InputBegan:Connect(function(input, gpe)
                 if gpe then return end
                 if isListening then return end
+
                 if currentKey ~= Enum.KeyCode.Unknown then
                     if input.KeyCode == currentKey or input.UserInputType == currentKey then
-                        if Callback then Callback() end
+                        if Callback then
+                            Callback()
+                        end
                     end
                 end
             end)
         end
+
         CreateKeybind(script.Parent, Keybind.DefaultKey, function()
             Keybind.Callback()
         end)
@@ -1809,17 +1952,19 @@ end
 
 function LumiereLibrary:Dropdown(params)
     local Dropdown = {}
+
     Dropdown.Name = params.Name
     Dropdown.Parent = params.Parent
     Dropdown.Options = params.Options or {}
     Dropdown.Default = params.Default or (Dropdown.Options[1] or "None")
     Dropdown.Callback = params.Callback or function() end
+
     local Lumiere = {}
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local Root = TargetRoot:FindFirstChild("Lumiere")
+    local TabFrame = Root.Main.Tabs:FindFirstChild(Dropdown.Parent)
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local RootFolder = TargetCore:FindFirstChild("Lumiere")
-
-    Lumiere["2"] = Instance.new("Frame", RootFolder.Main.Tabs[Dropdown.Parent].Scroll.Layout);
+    Lumiere["2"] = Instance.new("Frame", TabFrame.Scroll.Layout);
     Lumiere["2"]["BorderSizePixel"] = 0;
     Lumiere["2"]["BackgroundColor3"] = Color3.fromRGB(21, 21, 21);
     Lumiere["2"]["Size"] = UDim2.new(0, 405, 0, 49);
@@ -1834,7 +1979,8 @@ function LumiereLibrary:Dropdown(params)
     Lumiere["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["3"]["TextScaled"] = true;
     Lumiere["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["3"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["3"]["BackgroundTransparency"] = 1;
     Lumiere["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
@@ -1892,7 +2038,8 @@ function LumiereLibrary:Dropdown(params)
     Lumiere["d"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["d"]["TextSize"] = 14;
     Lumiere["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["d"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["d"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["d"]["BackgroundTransparency"] = 1;
     Lumiere["d"]["Name"] = [[Trigger]];
@@ -1906,7 +2053,8 @@ function LumiereLibrary:Dropdown(params)
     Lumiere["e"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["e"]["TextScaled"] = true;
     Lumiere["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["e"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["e"]["BackgroundTransparency"] = 1;
     Lumiere["e"]["Size"] = UDim2.new(0.67625, 0, 1, 0);
@@ -1927,6 +2075,7 @@ function LumiereLibrary:Dropdown(params)
     local function C_11()
         local script = Lumiere["11"];
         local TweenService = game:GetService("TweenService")
+
         local function CreateOptions(DropdownContainer, Options, Callback)
             local DropdownFrame = DropdownContainer:WaitForChild("Dropdown")
             local Chevron = DropdownFrame:WaitForChild("Chevron")
@@ -1937,14 +2086,17 @@ function LumiereLibrary:Dropdown(params)
 
             ComponentName.AnchorPoint = Vector2.new(0, 0.5)
             ComponentName.Position = UDim2.new(0, 15, 0, 24)
+
             DropdownFrame.AnchorPoint = Vector2.new(1, 0.5)
             DropdownFrame.Position = UDim2.new(1, -12, 0, 24)
 
             local isOpen = false
             local OptionHeight = 28
             local DropdownYSize = #Options * OptionHeight
+
             local originalSize = UDim2.new(1, 0, 0, 49)
             local expandedSize = UDim2.new(1, 0, 0, 49 + DropdownYSize + 10)
+
             local originalCorner = script.Parent.UICorner.CornerRadius
             local expandedCorner = UDim.new(0, 5)
 
@@ -1979,25 +2131,31 @@ function LumiereLibrary:Dropdown(params)
                 OptionBtn.Text = "  " .. option
                 OptionBtn.TextXAlignment = Enum.TextXAlignment.Left
                 OptionBtn.TextColor3 = Color3.fromRGB(125, 125, 125)
-                OptionBtn.FontFace = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
+                OptionBtn.FontFace = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+                    Enum.FontStyle.Normal)
                 OptionBtn.TextSize = 13
                 OptionBtn.ZIndex = 11
                 OptionBtn.Parent = ListFrame
 
                 OptionBtn.MouseEnter:Connect(function()
-                    TweenService:Create(OptionBtn, TweenInfo.new(0.15), { TextColor3 = Color3.fromRGB(175, 175, 175) }):Play()
+                    TweenService:Create(OptionBtn, TweenInfo.new(0.15), { TextColor3 = Color3.fromRGB(175, 175, 175) })
+                        :Play()
                 end)
 
                 OptionBtn.MouseLeave:Connect(function()
-                    TweenService:Create(OptionBtn, TweenInfo.new(0.15), { TextColor3 = Color3.fromRGB(125, 125, 125) }):Play()
+                    TweenService:Create(OptionBtn, TweenInfo.new(0.15), { TextColor3 = Color3.fromRGB(125, 125, 125) })
+                        :Play()
                 end)
 
                 OptionBtn.MouseButton1Click:Connect(function()
                     SelectedText.Text = option
                     if Callback then Callback(option) end
+
                     isOpen = false
-                    TweenService:Create(ListFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-                    TweenService:Create(DropdownContainer, TweenInfo.new(0.2, Enum.EasingStyle.Quart), { Size = originalSize }):Play()
+                    TweenService:Create(ListFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart),
+                        { Size = UDim2.new(1, 0, 0, 0) }):Play()
+                    TweenService:Create(DropdownContainer, TweenInfo.new(0.2, Enum.EasingStyle.Quart),
+                        { Size = originalSize }):Play()
                     TweenService:Create(MainCorner, TweenInfo.new(0.2), { CornerRadius = originalCorner }):Play()
                     TweenService:Create(Chevron, TweenInfo.new(0.2), { Rotation = 0 }):Play()
                     task.wait(0.2)
@@ -2009,13 +2167,18 @@ function LumiereLibrary:Dropdown(params)
                 isOpen = not isOpen
                 if isOpen then
                     ListFrame.Visible = true
-                    TweenService:Create(DropdownContainer, TweenInfo.new(0.25, Enum.EasingStyle.Quart), { Size = expandedSize }):Play()
+                    TweenService:Create(DropdownContainer, TweenInfo.new(0.25, Enum.EasingStyle.Quart),
+                        { Size = expandedSize }):Play()
                     TweenService:Create(MainCorner, TweenInfo.new(0.25), { CornerRadius = expandedCorner }):Play()
-                    TweenService:Create(ListFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quart), { Size = UDim2.new(1, 0, 0, DropdownYSize) }):Play()
+
+                    TweenService:Create(ListFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quart),
+                        { Size = UDim2.new(1, 0, 0, DropdownYSize) }):Play()
                     TweenService:Create(Chevron, TweenInfo.new(0.2), { Rotation = 180 }):Play()
                 else
-                    TweenService:Create(ListFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-                    TweenService:Create(DropdownContainer, TweenInfo.new(0.2, Enum.EasingStyle.Quart), { Size = originalSize }):Play()
+                    TweenService:Create(ListFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart),
+                        { Size = UDim2.new(1, 0, 0, 0) }):Play()
+                    TweenService:Create(DropdownContainer, TweenInfo.new(0.2, Enum.EasingStyle.Quart),
+                        { Size = originalSize }):Play()
                     TweenService:Create(MainCorner, TweenInfo.new(0.2), { CornerRadius = originalCorner }):Play()
                     TweenService:Create(Chevron, TweenInfo.new(0.2), { Rotation = 0 }):Play()
                     task.wait(0.2)
@@ -2023,6 +2186,7 @@ function LumiereLibrary:Dropdown(params)
                 end
             end)
         end
+
         CreateOptions(script.Parent, Dropdown.Options, function(val)
             Dropdown.Callback(val)
         end)
@@ -2034,16 +2198,18 @@ end
 
 function LumiereLibrary:Colorpicker(params)
     local Colorpicker = {}
+
     Colorpicker.Name = params.Name
     Colorpicker.Parent = params.Parent
     Colorpicker.Default = params.Default or Color3.fromRGB(114, 83, 255)
     Colorpicker.Callback = params.Callback or function() end
+
     local Lumiere = {}
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local Root = TargetRoot:FindFirstChild("Lumiere")
+    local TabFrame = Root.Main.Tabs:FindFirstChild(Colorpicker.Parent)
 
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local RootFolder = TargetCore:FindFirstChild("Lumiere")
-
-    Lumiere["2"] = Instance.new("Frame", RootFolder.Main.Tabs[Colorpicker.Parent].Scroll.Layout);
+    Lumiere["2"] = Instance.new("Frame", TabFrame.Scroll.Layout);
     Lumiere["2"]["BorderSizePixel"] = 0;
     Lumiere["2"]["BackgroundColor3"] = Color3.fromRGB(21, 21, 21);
     Lumiere["2"]["Size"] = UDim2.new(0, 405, 0, 49);
@@ -2058,7 +2224,8 @@ function LumiereLibrary:Colorpicker(params)
     Lumiere["3"]["TextXAlignment"] = Enum.TextXAlignment.Left;
     Lumiere["3"]["TextScaled"] = true;
     Lumiere["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+    Lumiere["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal);
     Lumiere["3"]["TextColor3"] = Color3.fromRGB(126, 126, 126);
     Lumiere["3"]["BackgroundTransparency"] = 1;
     Lumiere["3"]["AnchorPoint"] = Vector2.new(0, 0.5);
@@ -2098,7 +2265,8 @@ function LumiereLibrary:Colorpicker(params)
     Lumiere["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
     Lumiere["a"]["TextSize"] = 14;
     Lumiere["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-    Lumiere["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+    Lumiere["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal);
     Lumiere["a"]["Size"] = UDim2.new(1, 0, 1, 0);
     Lumiere["a"]["BackgroundTransparency"] = 1;
     Lumiere["a"]["Name"] = [[Trigger]];
@@ -2112,6 +2280,7 @@ function LumiereLibrary:Colorpicker(params)
         local script = Lumiere["b"];
         local TweenService = game:GetService("TweenService")
         local UserInputService = game:GetService("UserInputService")
+
         local function CreateColorpicker(ColorpickerContainer, DefaultColor, Callback)
             local ColorPreview = ColorpickerContainer:WaitForChild("Color")
             local Trigger = ColorPreview:WaitForChild("Trigger")
@@ -2126,6 +2295,7 @@ function LumiereLibrary:Colorpicker(params)
 
             local isOpen = false
             local currentHue, currentSat, currentVal = DefaultColor:ToHSV()
+
             local originalSize = UDim2.new(1, 0, 0, 49)
             local expandedSize = UDim2.new(1, 0, 0, 215)
             local originalCorner = MainCorner.CornerRadius
@@ -2202,11 +2372,16 @@ function LumiereLibrary:Colorpicker(params)
             local function UpdateUI(instant, fireCallback)
                 local pickedColor = Color3.fromHSV(currentHue, currentSat, currentVal)
                 local tInfo = instant and TweenInfo.new(0) or TweenInfo.new(0.1)
+
                 TweenService:Create(ColorPreview, tInfo, { BackgroundColor3 = pickedColor }):Play()
                 TweenService:Create(SatValPicker, tInfo, { BackgroundColor3 = Color3.fromHSV(currentHue, 1, 1) }):Play()
-                TweenService:Create(SatValCursor, tInfo, { Position = UDim2.new(currentSat, 0, 1 - currentVal, 0) }):Play()
+                TweenService:Create(SatValCursor, tInfo, { Position = UDim2.new(currentSat, 0, 1 - currentVal, 0) })
+                    :Play()
                 TweenService:Create(HueCursor, tInfo, { Position = UDim2.new(currentHue, 0, 0.5, 0) }):Play()
-                if Callback and fireCallback then Callback(pickedColor) end
+
+                if Callback and fireCallback then
+                    Callback(pickedColor)
+                end
             end
 
             local draggingSV, draggingH = false, false
@@ -2256,31 +2431,40 @@ function LumiereLibrary:Colorpicker(params)
             Trigger.MouseButton1Click:Connect(function()
                 isOpen = not isOpen
                 local t = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
                 if isOpen then
                     ColorpickerContainer.ZIndex = 2
                     ColorPanel.Visible = true
                     task.wait()
+
                     TweenService:Create(ColorpickerContainer, t, { Size = expandedSize }):Play()
                     TweenService:Create(MainCorner, t, { CornerRadius = expandedCorner }):Play()
-                    TweenService:Create(ColorPanel, t, { Size = UDim2.new(1, -24, 0, 150), BackgroundTransparency = 0 }):Play()
+
+                    TweenService:Create(ColorPanel, t, { Size = UDim2.new(1, -24, 0, 150), BackgroundTransparency = 0 })
+                        :Play()
                     TweenService:Create(PanelStroke, t, { Transparency = 0 }):Play()
                     TweenService:Create(SatValPicker, t, { ImageTransparency = 0 }):Play()
                     TweenService:Create(HueSlider, t, { BackgroundTransparency = 0 }):Play()
                 else
                     ColorpickerContainer.ZIndex = 1
-                    TweenService:Create(ColorPanel, t, { Size = UDim2.new(1, -24, 0, 0), BackgroundTransparency = 1 }):Play()
+                    TweenService:Create(ColorPanel, t, { Size = UDim2.new(1, -24, 0, 0), BackgroundTransparency = 1 })
+                        :Play()
                     TweenService:Create(PanelStroke, t, { Transparency = 1 }):Play()
                     TweenService:Create(SatValPicker, t, { ImageTransparency = 1 }):Play()
                     TweenService:Create(HueSlider, t, { BackgroundTransparency = 1 }):Play()
+
                     TweenService:Create(ColorpickerContainer, t, { Size = originalSize }):Play()
                     TweenService:Create(MainCorner, t, { CornerRadius = originalCorner }):Play()
+
                     task.delay(0.3, function()
                         if not isOpen then ColorPanel.Visible = false end
                     end)
                 end
             end)
+
             UpdateUI(true, false)
         end
+
         CreateColorpicker(script.Parent, Colorpicker.Default, function(color)
             Colorpicker.Callback(color)
         end)
@@ -2293,13 +2477,18 @@ end
 function LumiereLibrary:Notification(Description, Duration)
     local TweenService = game:GetService("TweenService")
     local TextService = game:GetService("TextService")
-    local TargetCore = gethui and gethui() or game:GetService("CoreGui")
-    local Holder = TargetCore:FindFirstChild("Lumiere"):WaitForChild("NotificationHolder")
+
+    local TargetRoot = gethui and gethui() or game:GetService("CoreGui")
+    local RootFolder = TargetRoot:FindFirstChild("Lumiere")
+    local Holder = RootFolder:WaitForChild("NotificationHolder")
 
     local Duration = Duration or 5
     local tInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-    local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-    local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+
+    local GothamSemiFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.SemiBold,
+        Enum.FontStyle.Normal)
+    local GothamBoldFont = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold,
+        Enum.FontStyle.Normal)
 
     local Notif = Instance.new("CanvasGroup")
     Notif.Name = "Notification"
@@ -2326,7 +2515,7 @@ function LumiereLibrary:Notification(Description, Duration)
     TitleLabel.Position = UDim2.new(0, 15, 0, 15)
     TitleLabel.BackgroundTransparency = 1
     TitleLabel.FontFace = GothamBoldFont
-    TitleLabel.Text = "LUMIERE"
+    TitleLabel.Text = "ESSENCE"
     TitleLabel.TextColor3 = Color3.fromRGB(113, 82, 255)
     TitleLabel.TextSize = 13
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -2345,6 +2534,7 @@ function LumiereLibrary:Notification(Description, Duration)
     local paddingX = 30
     local topMargin = 35
     local bottomPadding = 28
+
     local maxWidth = Holder.AbsoluteSize.X - paddingX
     local textSize = TextService:GetTextSize(Description, 14, Enum.Font.Gotham, Vector2.new(maxWidth, 1000))
 
@@ -2366,7 +2556,8 @@ function LumiereLibrary:Notification(Description, Duration)
     TimerBar.BorderSizePixel = 0
     TimerBar.ZIndex = 2
 
-    TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 0, 2) }):Play()
+    TweenService:Create(TimerBar, TweenInfo.new(Duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 0, 2) })
+        :Play()
 
     task.delay(Duration, function()
         local fadeOut = TweenService:Create(Notif, tInfo, { GroupTransparency = 1 })
@@ -2380,3 +2571,42 @@ function LumiereLibrary:Notification(Description, Duration)
 end
 
 return LumiereLibrary
+
+-- [SCRIPT DE EXECUCAO ABAIXO] --
+
+-- Lumiere.CC | Bite By Night Execution Script
+-- Hospede o arquivo .txt no seu GitHub e use o link RAW abaixo:
+
+local LumiereLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/developertresl-commits/lumiere/refs/heads/main/lumiere_lib.lua"))()
+
+local Window = LumiereLibrary:Window({
+    GameName = "Bite By Night",
+    Version = "1.0.0"
+})
+
+local MainTab = LumiereLibrary:Tab({
+    Name = "Combate",
+    Image = "rbxassetid://10886548714",
+    Selected = true
+})
+
+MainTab:Toggle({
+    Name = "Kill Aura",
+    Default = false,
+    Callback = function(state)
+        getgenv().Killaura = state
+        while getgenv().Killaura do
+            task.wait()
+            -- Lógica de ataque
+        end
+    end
+})
+
+MainTab:Button({
+    Name = "Ativar Farm",
+    Callback = function()
+        LumiereLibrary:Notification("Farm Ativado!", 3)
+    end
+})
+
+LumiereLibrary:Notification("Lumiere.CC Carregado com Sucesso!", 5)
