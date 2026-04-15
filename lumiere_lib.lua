@@ -8,7 +8,8 @@ function LumiereLibrary:Window(params)
 
     local Lumiere = {}
 
-    local TargetCore = (gethui and gethui()) or game:GetService("CoreGui")\n    Lumiere["1"] = Instance.new("ScreenGui", TargetCore);
+    local TargetCore = (gethui and gethui()) or game:GetService("CoreGui")
+    Lumiere["1"] = Instance.new("ScreenGui", TargetCore);
     Lumiere["1"]["IgnoreGuiInset"] = true;
     Lumiere["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
     Lumiere["1"]["Name"] = [[Lumiere]];
@@ -2570,15 +2571,9 @@ function LumiereLibrary:Notification(Description, Duration)
     end)
 end
 
-return LumiereLibrary
 
--- [SCRIPT DE EXECUCAO ABAIXO] --
 
--- Lumiere.CC | Bite By Night Execution Script
--- Hospede o arquivo .txt no seu GitHub e use o link RAW abaixo:
-
-local LumiereLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/developertresl-commits/lumiere/refs/heads/main/lumiere_lib.lua"))()
-
+-- Executable example
 local Window = LumiereLibrary:Window({
     GameName = "Bite By Night",
     Version = "1.0.0"
@@ -2610,3 +2605,5 @@ MainTab:Button({
 })
 
 LumiereLibrary:Notification("Lumiere.CC Carregado com Sucesso!", 5)
+
+return LumiereLibrary
