@@ -2537,6 +2537,3 @@ function EssenceLibrary:Notification(Description, Duration)
 end
 
 return EssenceLibrary
-
-
-Apareceu isso.
